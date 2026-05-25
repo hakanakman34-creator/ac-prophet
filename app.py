@@ -394,7 +394,17 @@ with tab1:
                 if c not in recent_data.columns:
                     recent_data[c] = ""
                     
-            recent_data = recent_data[cols_to_keep].dropna()
+            # Critical columns that must not be NaN to have a valid record
+            critical_cols = ['POSTING_DATE', 'Haftanin_Gunu', 'City', 'ASC_CODE', 'ASC_NAME', 'Total_Jobs', 
+                             'NEW_ASSIGNED_JOBS', 'CARRYOVER_JOBS', 'COMPLETED_JOBS']
+            recent_data = recent_data[cols_to_keep].dropna(subset=critical_cols).copy()
+            
+            # Fill missing weather data with reasonable default values (e.g., 25 degrees) to prevent empty prompt
+            weather_cols = ['Ortalama_Sicaklik', 'Hissedilen_Sicaklik', 'Hissedilen_Sicaklik_Lag1', 'Hissedilen_Sicaklik_Lag2']
+            for wc in weather_cols:
+                if wc in recent_data.columns:
+                    recent_data[wc] = recent_data[wc].fillna(25.0)
+                    
             historical_context_str = recent_data.to_string(index=False)
             
             try:
