@@ -172,20 +172,7 @@ with tab2:
         except Exception as e:
             st.error(f"Dosya okuma hatası: {e}")
 
-    st.markdown("---")
-            
-    # Section 3: Data Fixer (Historical Editing)
-    st.subheader("3. Geçmiş Veri Düzenleyici (Data Fixer)")
-    st.markdown("Jobsdata.xlsx içindeki tüm veriyi doğrudan düzenleyip anormallikleri düzeltebilirsiniz.")
-    try:
-        history_df = pd.read_excel('Jobsdata.xlsx')
-        edited_history_df = st.data_editor(history_df, width='stretch', key="history_editor")
-        if st.button("💾 Tüm Değişiklikleri Excel'e Kaydet"):
-            edited_history_df.to_excel('Jobsdata.xlsx', index=False)
-            st.success("✅ Geçmiş veriler başarıyla güncellendi!")
-            st.cache_data.clear()
-    except Exception as e:
-        st.error(f"Geçmiş veriler yüklenemedi: {e}")
+
 
 with tab3:
     st.header("⚙️ Admin: Service Centers & Capacities")
@@ -279,6 +266,20 @@ with tab3:
                     st.rerun()
             except Exception as e:
                 st.error(f"Dosya okuma hatası: {e}")
+            
+    st.markdown("---")
+    with st.expander("🛠️ Gelişmiş: Geçmiş Veri Düzenleyici (Data Fixer)"):
+        st.warning("⚠️ **HAYATİ UYARI:** Bu alan yalnızca geçmiş veri girişindeki hataları düzeltmek veya veri tabanını manuel ameliyat etmek için kullanılmalıdır. Günlük operasyonel girişler için lütfen **'📁 Data Management'** sekmesini kullanın.")
+        st.markdown("`Jobsdata.xlsx` içindeki tüm veriyi doğrudan düzenleyip anormallikleri düzeltebilirsiniz.")
+        try:
+            history_df = pd.read_excel('Jobsdata.xlsx')
+            edited_history_df = st.data_editor(history_df, width='stretch', key="history_editor")
+            if st.button("💾 Tüm Değişiklikleri Excel'e Kaydet"):
+                edited_history_df.to_excel('Jobsdata.xlsx', index=False)
+                st.success("✅ Geçmiş veriler başarıyla güncellendi!")
+                st.cache_data.clear()
+        except Exception as e:
+            st.error(f"Geçmiş veriler yüklenemedi: {e}")
             
 with tab1:
     # ----------------- DATA PRESENTATION -----------------
