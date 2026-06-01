@@ -212,6 +212,7 @@ def load_and_preprocess_data(jobs_file: str, weather_file: str) -> pd.DataFrame:
         as_index=False
     )[['ACTIVE_BACKLOG', 'NEW_ASSIGNED_JOBS', 'CANCELLED_JOBS', 'COMPLETED_JOBS', 'CARRYOVER_JOBS']].sum()
     daily_jobs.rename(columns={'ACTIVE_BACKLOG': 'Total_Jobs'}, inplace=True)
+    daily_jobs['Total_Jobs'] = daily_jobs['Total_Jobs'].clip(lower=0)
     
     logger.info("Loading Weather data...")
     weather_df = pd.read_excel(weather_file)

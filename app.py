@@ -136,8 +136,8 @@ with tab2:
     with col_btn1:
         if st.button("💾 Günlük Veriyi Kaydet", use_container_width=True):
             try:
-                # Calculate ACTIVE_BACKLOG
-                edited_entry_df['ACTIVE_BACKLOG'] = (edited_entry_df['CARRYOVER_JOBS'] + edited_entry_df['NEW_ASSIGNED_JOBS']) - (edited_entry_df['CANCELLED_JOBS'] + edited_entry_df['COMPLETED_JOBS'])
+                # Calculate ACTIVE_BACKLOG (cap negative values to 0)
+                edited_entry_df['ACTIVE_BACKLOG'] = ((edited_entry_df['CARRYOVER_JOBS'] + edited_entry_df['NEW_ASSIGNED_JOBS']) - (edited_entry_df['CANCELLED_JOBS'] + edited_entry_df['COMPLETED_JOBS'])).clip(lower=0)
                 
                 existing_data = pd.read_excel('Jobsdata.xlsx')
                 # Ensure dates are strings for comparison/appending uniformly
@@ -153,9 +153,9 @@ with tab2:
                 
     with col_btn2:
         try:
-            # Prepare download data matching the template structure
+            # Prepare download data matching the template structure (cap negative values to 0)
             download_df = edited_entry_df.copy()
-            download_df['ACTIVE_BACKLOG'] = (download_df['CARRYOVER_JOBS'] + download_df['NEW_ASSIGNED_JOBS']) - (download_df['CANCELLED_JOBS'] + download_df['COMPLETED_JOBS'])
+            download_df['ACTIVE_BACKLOG'] = ((download_df['CARRYOVER_JOBS'] + download_df['NEW_ASSIGNED_JOBS']) - (download_df['CANCELLED_JOBS'] + download_df['COMPLETED_JOBS'])).clip(lower=0)
             
             # Reorder columns to match the template exactly
             cols_order = ['POSTING_DATE', 'ASC_CODE', 'ASC_NAME', 'City', 'Region', 'CARRYOVER_JOBS', 'NEW_ASSIGNED_JOBS', 'CANCELLED_JOBS', 'COMPLETED_JOBS', 'ACTIVE_BACKLOG']
@@ -379,7 +379,8 @@ with tab1:
             st.stop()
 
         # Clear previous session results before new run
-        for key in ['pipeline_map_df', 'pipeline_geo_data', 'pipeline_tactical_orders']:
+        st.session_state['pipeline_completed'] = False
+        for key in ['pipeline_map_df', 'pipeline_geo_data', 'pipeline_tactical_orders', 'pipeline_forecast_df']:
             st.session_state.pop(key, None)
 
         with st.spinner("⏳ Forecaster correlate-predicting..."):
@@ -596,13 +597,14 @@ with tab1:
                     )
                     # SAVE TO SESSION STATE
                     st.session_state['pipeline_tactical_orders'] = tactical_orders
+                    st.session_state['pipeline_completed'] = True
 
             except Exception as api_err:
                 st.error(f"Failed to execute LLM Agents: {api_err}")
                 st.info("Ensure your API key in `.env` is valid and has sufficient quota.")
 
     # RENDER FROM SESSION STATE — persists across all widget interactions
-    if 'pipeline_map_df' in st.session_state and 'pipeline_geo_data' in st.session_state:
+    if st.session_state.get('pipeline_completed', False) and 'pipeline_map_df' in st.session_state and 'pipeline_geo_data' in st.session_state:
         map_df = st.session_state['pipeline_map_df']
         geo_data = st.session_state['pipeline_geo_data']
 
