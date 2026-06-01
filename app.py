@@ -132,22 +132,57 @@ with tab2:
     st.markdown("Aşağıdaki tabloya günlük verilerinizi girin. *ACTIVE_BACKLOG* otomatik hesaplanarak kaydedilecektir.")
     edited_entry_df = st.data_editor(st.session_state['manual_entry_df'], width='stretch', hide_index=True)
     
-    if st.button("💾 Günlük Veriyi Kaydet"):
+    col_btn1, col_btn2 = st.columns(2)
+    with col_btn1:
+        if st.button("💾 Günlük Veriyi Kaydet", use_container_width=True):
+            try:
+                # Calculate ACTIVE_BACKLOG
+                edited_entry_df['ACTIVE_BACKLOG'] = (edited_entry_df['CARRYOVER_JOBS'] + edited_entry_df['NEW_ASSIGNED_JOBS']) - (edited_entry_df['CANCELLED_JOBS'] + edited_entry_df['COMPLETED_JOBS'])
+                
+                existing_data = pd.read_excel('Jobsdata.xlsx')
+                # Ensure dates are strings for comparison/appending uniformly
+                edited_entry_df['POSTING_DATE'] = edited_entry_df['POSTING_DATE'].astype(str)
+                existing_data['POSTING_DATE'] = existing_data['POSTING_DATE'].astype(str)
+                
+                combined_data = pd.concat([existing_data, edited_entry_df], ignore_index=True)
+                combined_data.to_excel('Jobsdata.xlsx', index=False)
+                st.success(f"✅ {entry_date} tarihi için veriler başarıyla eklendi!")
+                st.cache_data.clear()
+            except Exception as e:
+                st.error(f"Kayıt hatası: {e}")
+                
+    with col_btn2:
         try:
-            # Calculate ACTIVE_BACKLOG
-            edited_entry_df['ACTIVE_BACKLOG'] = (edited_entry_df['CARRYOVER_JOBS'] + edited_entry_df['NEW_ASSIGNED_JOBS']) - (edited_entry_df['CANCELLED_JOBS'] + edited_entry_df['COMPLETED_JOBS'])
+            # Prepare download data matching the template structure
+            download_df = edited_entry_df.copy()
+            download_df['ACTIVE_BACKLOG'] = (download_df['CARRYOVER_JOBS'] + download_df['NEW_ASSIGNED_JOBS']) - (download_df['CANCELLED_JOBS'] + download_df['COMPLETED_JOBS'])
             
-            existing_data = pd.read_excel('Jobsdata.xlsx')
-            # Ensure dates are strings for comparison/appending uniformly
-            edited_entry_df['POSTING_DATE'] = edited_entry_df['POSTING_DATE'].astype(str)
-            existing_data['POSTING_DATE'] = existing_data['POSTING_DATE'].astype(str)
+            # Reorder columns to match the template exactly
+            cols_order = ['POSTING_DATE', 'ASC_CODE', 'ASC_NAME', 'City', 'Region', 'CARRYOVER_JOBS', 'NEW_ASSIGNED_JOBS', 'CANCELLED_JOBS', 'COMPLETED_JOBS', 'ACTIVE_BACKLOG']
+            for col in cols_order:
+                if col not in download_df.columns:
+                    if col == 'Region':
+                        download_df['Region'] = 'İSTANBUL'
+                    else:
+                        download_df[col] = 0
+            download_df = download_df[cols_order]
             
-            combined_data = pd.concat([existing_data, edited_entry_df], ignore_index=True)
-            combined_data.to_excel('Jobsdata.xlsx', index=False)
-            st.success(f"✅ {entry_date} tarihi için veriler başarıyla eklendi!")
-            st.cache_data.clear()
+            # Generate Excel bytes in memory
+            import io
+            buffer = io.BytesIO()
+            with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+                download_df.to_excel(writer, index=False, sheet_name='JobsData')
+            buffer.seek(0)
+            
+            st.download_button(
+                label="📥 Tabloyu Excel (.xlsx) Olarak İndir",
+                data=buffer,
+                file_name=f"manual_veri_girisi_{entry_date.strftime('%Y-%m-%d')}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                use_container_width=True
+            )
         except Exception as e:
-            st.error(f"Kayıt hatası: {e}")
+            st.error(f"Excel indirme dosyası hazırlanırken hata oluştu: {e}")
             
     st.markdown("---")
     
