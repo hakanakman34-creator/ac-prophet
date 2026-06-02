@@ -245,6 +245,7 @@ def generate_pdf_from_markdown(md_path, pdf_path, lang_code):
     in_quote = False
     quote_lines = []
     in_code = False
+    in_mermaid = False
     
     for line in lines:
         stripped = line.strip()
@@ -254,8 +255,28 @@ def generate_pdf_from_markdown(md_path, pdf_path, lang_code):
             continue
             
         if stripped.startswith("```"):
-            in_code = not in_code
+            if "mermaid" in stripped:
+                in_mermaid = True
+            elif in_mermaid:
+                # End of mermaid block
+                in_mermaid = False
+                in_code = False
+                # Insert the workflow image
+                img_path = r"C:\Users\TRON PCH\.gemini\antigravity\brain\2af92f41-e552-4ef6-96b7-8756516a1cae\ai_workflow_diagram_1780386158350.png"
+                if os.path.exists(img_path):
+                    from reportlab.platypus import Image as RLImage
+                    img = RLImage(img_path, width=400, height=300)
+                    story.append(Spacer(1, 15))
+                    story.append(img)
+                    story.append(Spacer(1, 15))
+                continue
+            else:
+                in_code = not in_code
             continue
+            
+        if in_mermaid:
+            continue
+            
         if in_code:
             continue
             

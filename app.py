@@ -116,21 +116,49 @@ with tab2:
     entry_date = st.date_input("Kayıt Tarihi Seçin")
     
     if 'manual_entry_df' not in st.session_state or st.session_state.get('last_entry_date') != entry_date:
-        # Initialize an empty dataframe with services for this date
-        entry_data = []
-        for _, row in services_df.iterrows():
-            entry_data.append({
-                "POSTING_DATE": entry_date.strftime("%Y-%m-%d"),
-                "ASC_CODE": row.get("ASC_CODE", ""),
-                "ASC_NAME": row.get("ASC_NAME", ""),
-                "City": row.get("City", ""),
-                "Region": "İSTANBUL",
-                "CARRYOVER_JOBS": 0,
-                "NEW_ASSIGNED_JOBS": 0,
-                "CANCELLED_JOBS": 0,
-                "COMPLETED_JOBS": 0
-            })
-        st.session_state['manual_entry_df'] = pd.DataFrame(entry_data)
+        target_date_str = entry_date.strftime("%Y-%m-%d")
+        has_existing = False
+        try:
+            if os.path.exists('Jobsdata.xlsx'):
+                existing_data = pd.read_excel('Jobsdata.xlsx')
+                if not existing_data.empty:
+                    # Clean and standardise POSTING_DATE format
+                    existing_data['POSTING_DATE_clean'] = pd.to_datetime(existing_data['POSTING_DATE']).dt.strftime('%Y-%m-%d')
+                    date_records = existing_data[existing_data['POSTING_DATE_clean'] == target_date_str].copy()
+                    if not date_records.empty:
+                        cols_needed = ["POSTING_DATE", "ASC_CODE", "ASC_NAME", "City", "Region", 
+                                       "CARRYOVER_JOBS", "NEW_ASSIGNED_JOBS", "CANCELLED_JOBS", "COMPLETED_JOBS"]
+                        for c in cols_needed:
+                            if c not in date_records.columns:
+                                date_records[c] = 0 if c.endswith('JOBS') else ("İSTANBUL" if c == "Region" else "")
+                        
+                        active_codes = set(services_df['ASC_CODE'].dropna().astype(int).tolist())
+                        date_records['ASC_CODE'] = date_records['ASC_CODE'].astype(int)
+                        date_records = date_records[date_records['ASC_CODE'].isin(active_codes)]
+                        
+                        if not date_records.empty:
+                            date_records['POSTING_DATE'] = target_date_str
+                            st.session_state['manual_entry_df'] = date_records[cols_needed].reset_index(drop=True)
+                            has_existing = True
+        except Exception as e:
+            logging.error(f"Error loading existing data for entry: {e}")
+
+        if not has_existing:
+            # Initialize with default zeros for this date
+            entry_data = []
+            for _, row in services_df.iterrows():
+                entry_data.append({
+                    "POSTING_DATE": target_date_str,
+                    "ASC_CODE": int(row.get("ASC_CODE", 0)),
+                    "ASC_NAME": row.get("ASC_NAME", ""),
+                    "City": row.get("City", ""),
+                    "Region": "İSTANBUL",
+                    "CARRYOVER_JOBS": 0,
+                    "NEW_ASSIGNED_JOBS": 0,
+                    "CANCELLED_JOBS": 0,
+                    "COMPLETED_JOBS": 0
+                })
+            st.session_state['manual_entry_df'] = pd.DataFrame(entry_data)
         st.session_state['last_entry_date'] = entry_date
         
     st.markdown("Aşağıdaki tabloya günlük verilerinizi girin. *ACTIVE_BACKLOG* otomatik hesaplanarak kaydedilecektir.")
@@ -144,14 +172,27 @@ with tab2:
                 edited_entry_df['ACTIVE_BACKLOG'] = ((edited_entry_df['CARRYOVER_JOBS'] + edited_entry_df['NEW_ASSIGNED_JOBS']) - (edited_entry_df['CANCELLED_JOBS'] + edited_entry_df['COMPLETED_JOBS'])).clip(lower=0)
                 
                 existing_data = pd.read_excel('Jobsdata.xlsx')
-                # Ensure dates are strings for comparison/appending uniformly
-                edited_entry_df['POSTING_DATE'] = edited_entry_df['POSTING_DATE'].astype(str)
-                existing_data['POSTING_DATE'] = existing_data['POSTING_DATE'].astype(str)
                 
+                # Format existing POSTING_DATE column cleanly
+                existing_data['POSTING_DATE_clean'] = pd.to_datetime(existing_data['POSTING_DATE']).dt.strftime('%Y-%m-%d')
+                target_date_str = pd.to_datetime(entry_date).strftime('%Y-%m-%d')
+                
+                # Filter out the existing records for this target date
+                existing_data = existing_data[existing_data['POSTING_DATE_clean'] != target_date_str].copy()
+                existing_data.drop(columns=['POSTING_DATE_clean'], errors='ignore', inplace=True)
+                
+                # Ensure the entry date matches exactly
+                edited_entry_df['POSTING_DATE'] = target_date_str
+                
+                # Combine existing and new data
                 combined_data = pd.concat([existing_data, edited_entry_df], ignore_index=True)
                 combined_data.to_excel('Jobsdata.xlsx', index=False)
-                st.success(f"✅ {entry_date} tarihi için veriler başarıyla eklendi!")
+                
+                st.success(f"✅ {entry_date} tarihi için veriler başarıyla güncellendi!")
                 st.cache_data.clear()
+                
+                st.session_state['manual_entry_df'] = edited_entry_df.copy()
+                st.rerun()
             except Exception as e:
                 st.error(f"Kayıt hatası: {e}")
                 
