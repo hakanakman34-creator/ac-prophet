@@ -6,7 +6,7 @@ import logging
 import os
 from dotenv import load_dotenv
 load_dotenv()
-from data_processor import load_and_preprocess_data, load_marmara_services_config, save_marmara_services_config, fetch_future_weather
+from data_processor import load_and_preprocess_data, load_marmara_services_config, save_marmara_services_config, fetch_future_weather, extract_multi_year_patterns
 from agents import ForecasterAgent, WatchdogAgent, CommanderAgent, WatchdogOutput
 
 # Streamlit configurations
@@ -64,9 +64,11 @@ def load_service_district_map():
             return json.load(f)
     return {}
 
+@st.cache_data
 def fetch_data_v2():
     return load_and_preprocess_data('Jobsdata.xlsx', 'weatherdata.xlsx')
 
+@st.cache_data
 def fetch_services_data_v2():
     # Load freshly to avoid stale cached configurations
     return load_marmara_services_config('ServiceList.xlsx')
@@ -456,7 +458,7 @@ with tab1:
             
             # Merge lags back into forecast_df
             forecast_df = pd.merge(forecast_df, combined_w[['Tarih', 'City', 'Hissedilen_Sicaklik_Lag1', 'Hissedilen_Sicaklik_Lag2']], on=['Tarih', 'City'], how='left')
-            forecast_str = forecast_df.to_string(index=False)
+            forecast_json_payload = forecast_df.to_json(orient='records', force_ascii=False)
             
             recent_days = sorted(df['POSTING_DATE'].unique())[-7:]
             recent_data = df[df['POSTING_DATE'].isin(recent_days)].copy()
@@ -486,19 +488,22 @@ with tab1:
                 if wc in recent_data.columns:
                     recent_data[wc] = recent_data[wc].fillna(25.0)
                     
-            historical_context_str = recent_data.to_string(index=False)
+            historical_context_json_payload = recent_data.to_json(orient='records', force_ascii=False)
             
             try:
                 # 1. Forecaster Agent
                 capacity_info = edited_services_df[['ASC_CODE', 'ASC_NAME', 'City', 'Team Quantity', 'Job Completion Capacity']].copy()
                 capacity_info['Daily_Capacity'] = capacity_info['Team Quantity'] * capacity_info['Job Completion Capacity']
-                capacity_str = capacity_info[['ASC_CODE', 'ASC_NAME', 'Daily_Capacity']].to_json(orient='records', force_ascii=False)
+                capacity_str = capacity_info[['ASC_CODE', 'ASC_NAME', 'City', 'Daily_Capacity']].to_json(orient='records', force_ascii=False)
                 
                 forecaster = ForecasterAgent()
+                patterns_str = extract_multi_year_patterns('Jobsdata_backup_old.xlsx')
+                
                 forecast_output = forecaster.predict(
-                    historical_context=historical_context_str,
-                    weather_forecast=forecast_str,
-                    capacity_data=capacity_str
+                    historical_context=historical_context_json_payload,
+                    weather_forecast=forecast_json_payload,
+                    capacity_data=capacity_str,
+                    multi_year_patterns=patterns_str
                 )
                 forecast_json_str = forecast_output.model_dump_json(indent=2)
                 
@@ -557,7 +562,7 @@ with tab1:
                                 daily_risk.risk_map.append(WatchdogASCRisk(
                                     ASC_CODE=asc_code,
                                     City=str(row.get('City', '')),
-                                    Predicted_Total_Jobs=round(city_avg, 1),
+                                    Predicted_Total_Jobs=int(round(city_avg)),
                                     Durum=durum
                                 ))
 

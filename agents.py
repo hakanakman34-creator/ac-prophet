@@ -22,10 +22,10 @@ except Exception as e:
 class ASCForecast(BaseModel):
     ASC_CODE: str
     City: str
-    Carryover_Jobs: float
-    Incoming_Jobs: float
-    Completed_Jobs: float
-    Predicted_Total_Jobs: float
+    Carryover_Jobs: int
+    Incoming_Jobs: int
+    Completed_Jobs: int
+    Predicted_Total_Jobs: int
 
 class DailyForecast(BaseModel):
     day: str
@@ -38,7 +38,7 @@ class ForecasterOutput(BaseModel):
 class WatchdogASCRisk(BaseModel):
     ASC_CODE: str
     City: str
-    Predicted_Total_Jobs: float
+    Predicted_Total_Jobs: int
     Durum: str  # Kırmızı / Sarı / Yeşil
 
 class WatchdogDailyRisk(BaseModel):
@@ -55,16 +55,17 @@ class ForecasterAgent:
         self.system_instruction = """You are an expert Data Scientist forecasting HVAC installation demand for Samsung Turkey, focusing EXCLUSIVELY on the Marmara Region.
 Data Schema Provided:
 Weather Data: [Tarih, Yıl, Ay, Gün, Haftanin_Gunu, City, Ortalama_Sicaklik, Hissedilen_Sicaklik, Hissedilen_Sicaklik_Lag1, Hissedilen_Sicaklik_Lag2, Maksimum_Sicaklik, Minimum_Sicaklik, Ortalama_Nem]
-Historical Context Data: [POSTING_DATE, Haftanin_Gunu, City, ASC_NAME, Total_Jobs, Ortalama_Sicaklik, Hissedilen_Sicaklik, Hissedilen_Sicaklik_Lag1, Hissedilen_Sicaklik_Lag2, NEW_ASSIGNED_JOBS, CARRYOVER_JOBS, COMPLETED_JOBS]
+Recent Context Data: [POSTING_DATE, Haftanin_Gunu, City, ASC_NAME, Total_Jobs, Ortalama_Sicaklik, Hissedilen_Sicaklik, Hissedilen_Sicaklik_Lag1, Hissedilen_Sicaklik_Lag2, NEW_ASSIGNED_JOBS, CARRYOVER_JOBS, COMPLETED_JOBS]
 Capacity Data: [ASC_CODE, City, Daily_Capacity]
+Multi-Year Historical Patterns: Text describing how weekends typically behave relative to weekdays based on years of past data.
 
 CRITICAL RULES FOR DATA HANDLING:
-The 'Total_Jobs' column in the historical data represents the ACTIVE_BACKLOG (the true queued work) for each specific service center (ASC_NAME) on that date.
-Your prediction goal is to estimate the future daily breakdown for each service center over the next 7 days, based on their recent historical trends, the upcoming weather forecast, and their daily completion capacity.
+The 'Total_Jobs' column in the recent historical data represents the ACTIVE_BACKLOG (the true queued work) for each specific service center (ASC_NAME) on that date.
+Your prediction goal is to estimate the future daily breakdown for each service center over the next 7 days, based on their recent backlog trends, the upcoming weather forecast, their daily completion capacity, and the multi-year historical patterns.
 
 CRITICAL FORECASTING LOGIC:
-1. HEAT INDEX & LAG: Pay close attention to 'Hissedilen_Sicaklik' (Heat Index) and its lagged versions (Lag1: yesterday's heat index, Lag2: day before yesterday's heat index). A high heat index 1 or 2 days ago strongly drives an increase in 'Incoming_Jobs' today due to the delay between the purchasing decision and installation registration.
-2. DAY OF WEEK: Pay attention to 'Haftanin_Gunu'. Weekends (Cumartesi, Pazar) typically show different patterns in both Incoming_Jobs and Completed_Jobs compared to weekdays.
+1. HEAT INDEX & LAG: Pay close attention to 'Hissedilen_Sicaklik' (Heat Index) and its lagged versions. A high heat index 1 or 2 days ago strongly drives an increase in 'Incoming_Jobs' today due to the delay between the purchasing decision and installation registration.
+2. DAY OF WEEK & MULTI-YEAR PATTERNS: Pay attention to 'Haftanin_Gunu' and strictly follow the [MULTI-YEAR HISTORICAL PATTERNS] provided in the prompt. Service centers DO OPERATE on weekends, and new jobs DO ARRIVE on weekends. Never assume weekend values are 0. Use the exact historical percentage ratios provided to calculate weekend incoming/completed jobs relative to adjacent weekdays.
 
 For each day, you must predict:
 1. Carryover_Jobs: The uncompleted jobs remaining from the PREVIOUS day. CRITICAL: Day 1 Carryover MUST equal the Last known Total_Jobs from history. For Day 2 to Day 7, Carryover_Jobs MUST EXACTLY equal the PREVIOUS day's Predicted_Total_Jobs. DO NOT reset this to 0!
@@ -77,64 +78,217 @@ You MUST include EVERY SINGLE service center (ASC_CODE) that appears in the hist
 
 Your Task:
 Using the 7-day weather forecast, capacity data, and recent historical backlog context, predict the detailed metrics for each service center (ASC_CODE and ASC_NAME) for each day in the 7-day forecast.
+
 Output format:
-Provide a JSON array formatted as [Day_1, Day_2, ..., Day_7]. Inside each day, list ASC_CODE, City, Carryover_Jobs, Incoming_Jobs, Completed_Jobs, and Predicted_Total_Jobs as floats/integers. Output language: Turkish."""
+You MUST output a JSON object adhering exactly to the following structure:
+{
+  "seven_day_forecast": [
+    {
+      "day": "YYYY-MM-DD", (the exact forecast date string, e.g. 2026-06-03)
+      "forecasts": [
+        {
+          "ASC_CODE": "string containing service code",
+          "City": "city name",
+          "Carryover_Jobs": carryover jobs (float),
+          "Incoming_Jobs": incoming jobs (float),
+          "Completed_Jobs": completed jobs (float),
+          "Predicted_Total_Jobs": predicted total backlog (float)
+        },
+        ...
+      ]
+    },
+    ...
+  ]
+}
+Output language: Turkish."""
 
     @retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=1, min=2, max=10))
-    def predict(self, historical_context: str, weather_forecast: str, capacity_data: str) -> ForecasterOutput:
+    def predict(self, historical_context: str, weather_forecast: str, capacity_data: str, multi_year_patterns: str) -> ForecasterOutput:
         if not client:
             raise ValueError("Gemini Client not initialized.")
             
-        prompt = f"Historical Context:\n{historical_context}\n\nCapacity Data:\n{capacity_data}\n\n7-Day Weather Forecast:\n{weather_forecast}\n\nPlease generate the forecast."
+        import pandas as pd
+        import io
+        import concurrent.futures
         
-        logger.info("Calling Forecaster Agent...")
-        response = client.models.generate_content(
-            model=self.model_name,
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                system_instruction=self.system_instruction,
-                response_mime_type="application/json",
-                response_schema=ForecasterOutput,
-                temperature=0.2,
-            ),
-        )
-        return ForecasterOutput.model_validate_json(response.text)
+        # Try to run optimized parallel city-by-city forecasting
+        try:
+            hist_df = pd.read_json(io.StringIO(historical_context))
+            weather_df = pd.read_json(io.StringIO(weather_forecast))
+            capacity_df = pd.read_json(io.StringIO(capacity_data))
+            
+            # Ensure required columns exist
+            if 'City' not in capacity_df.columns:
+                raise ValueError("City column missing in capacity data JSON.")
+                
+            cities = capacity_df['City'].dropna().unique()
+            logger.info(f"Splitting forecasting into {len(cities)} cities for parallel processing: {list(cities)}")
+            
+            def predict_city(city):
+                city_capacity = capacity_df[capacity_df['City'] == city]
+                city_hist = hist_df[hist_df['City'] == city]
+                city_weather = weather_df[weather_df['City'] == city]
+                
+                # Convert back to clean text tables for Gemini prompt readability
+                city_capacity_str = city_capacity[['ASC_CODE', 'ASC_NAME', 'Daily_Capacity']].to_string(index=False)
+                city_hist_str = city_hist.to_string(index=False) if not city_hist.empty else "No recent history"
+                city_weather_str = city_weather.to_string(index=False) if not city_weather.empty else "No weather forecast"
+                
+                prompt = (
+                    f"Historical Context for {city}:\n{city_hist_str}\n\n"
+                    f"Capacity Data for {city}:\n{city_capacity_str}\n\n"
+                    f"7-Day Weather Forecast for {city}:\n{city_weather_str}\n\n"
+                    f"Multi-Year Historical Patterns:\n{multi_year_patterns}\n\n"
+                    f"Please generate the forecast for the city: {city}."
+                )
+                
+                response = client.models.generate_content(
+                    model=self.model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        system_instruction=self.system_instruction,
+                        response_mime_type="application/json",
+                        response_schema=ForecasterOutput,
+                        temperature=0.2,
+                    ),
+                )
+                return city, ForecasterOutput.model_validate_json(response.text)
+
+            results = {}
+            with concurrent.futures.ThreadPoolExecutor(max_workers=len(cities)) as executor:
+                future_to_city = {executor.submit(predict_city, city): city for city in cities}
+                for future in concurrent.futures.as_completed(future_to_city):
+                    city = future_to_city[future]
+                    try:
+                        city_name, output = future.result()
+                        results[city_name] = output
+                    except Exception as exc:
+                        logger.error(f"City {city} forecast failed: {exc}")
+                        raise exc
+
+            # Merge results by day
+            merged_days = {}
+            for city_name, output in results.items():
+                for daily in output.seven_day_forecast:
+                    day = daily.day
+                    if day not in merged_days:
+                        merged_days[day] = []
+                    merged_days[day].extend(daily.forecasts)
+                    
+            seven_day_forecast = []
+            for day in sorted(merged_days.keys()):
+                seven_day_forecast.append(DailyForecast(
+                    day=day,
+                    forecasts=merged_days[day]
+                ))
+                
+            return ForecasterOutput(seven_day_forecast=seven_day_forecast)
+            
+        except Exception as e:
+            logger.warning(f"Parallel forecasting failed or fallback triggered: {e}. Running legacy single-prompt forecasting...")
+            
+            prompt = f"Historical Context:\n{historical_context}\n\nCapacity Data:\n{capacity_data}\n\n7-Day Weather Forecast:\n{weather_forecast}\n\nMulti-Year Historical Patterns:\n{multi_year_patterns}\n\nPlease generate the forecast."
+            
+            logger.info("Calling legacy Forecaster Agent...")
+            response = client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    system_instruction=self.system_instruction,
+                    response_mime_type="application/json",
+                    response_schema=ForecasterOutput,
+                    temperature=0.2,
+                ),
+            )
+            return ForecasterOutput.model_validate_json(response.text)
 
 
 class WatchdogAgent:
     def __init__(self, model_name="gemini-2.5-flash"):
         self.model_name = model_name
-        self.system_instruction = """You are an expert Operations Risk Analyst for Samsung Turkey's Marmara HVAC service network.
 
-Your Task:
-For EVERY ASC in Capacity Data, calculate its daily risk for ALL 7 days:
-- Daily Capacity = Team Quantity * Job Completion Capacity
-- If Predicted_Total_Jobs > Daily Capacity: Durum = 'Kırmızı'
-- If Predicted_Total_Jobs >= 0.75 * Daily Capacity: Durum = 'Sarı'
-- Otherwise: Durum = 'Yeşil'
-
-IMPORTANT: You MUST include EVERY SINGLE ASC from the Capacity Data in the output for EACH of the 7 days. Do NOT skip or omit any ASC. If no forecast data exists for an ASC, use its most recent predicted value or assign a conservative estimate based on the city average.
-You MUST return a structured JSON object with a 'seven_day_risk' key containing a list of 7 daily objects. Each daily object has a 'day' field (CRITICAL: This MUST be the exact actual date string from the forecast data, e.g. '2026-05-24', do NOT use 'Gün 1') and a 'risk_map' list of ASC entries. Each ASC entry must have: ASC_CODE, City, Predicted_Total_Jobs (number), Durum (string: Kırmızı/Sarı/Yeşil)."""
-
-    @retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=1, min=2, max=10))
     def generate_risk_map(self, forecast_json: str, capacity_data: str) -> WatchdogOutput:
-        if not client:
-            raise ValueError("Gemini Client not initialized.")
-
-        prompt = f"Predicted Jobs:\n{forecast_json}\n\nCapacity Data:\n{capacity_data}\n\nGenerate the 7-day risk map."
-
-        logger.info("Calling Watchdog Agent...")
-        response = client.models.generate_content(
-            model=self.model_name,
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                system_instruction=self.system_instruction,
-                response_mime_type="application/json",
-                response_schema=WatchdogOutput,
-                temperature=0.2,
-            ),
-        )
-        return WatchdogOutput.model_validate_json(response.text)
+        logger.info("Watchdog Agent processing mathematically in Python...")
+        try:
+            forecast_data = json.loads(forecast_json)
+            capacity_list = json.loads(capacity_data)
+            
+            # Map ASC_CODE to capacity details
+            capacity_map = {}
+            for item in capacity_list:
+                code = str(item.get('ASC_CODE', '')).strip()
+                city = str(item.get('City', '')).strip()
+                team_qty = float(item.get('Team Quantity', 5))
+                job_cap = float(item.get('Job Completion Capacity', 4.0))
+                capacity_map[code] = {
+                    'City': city,
+                    'Daily_Capacity': team_qty * job_cap
+                }
+                
+            seven_day_risk = []
+            
+            for daily_forecast in forecast_data.get('seven_day_forecast', []):
+                day_str = daily_forecast.get('day', '')
+                risk_map = []
+                
+                # Check for existing forecasts
+                forecasts = daily_forecast.get('forecasts', [])
+                
+                for item in forecasts:
+                    code = str(item.get('ASC_CODE', '')).strip()
+                    city = str(item.get('City', '')).strip()
+                    pred_jobs = int(round(float(item.get('Predicted_Total_Jobs', 0.0))))
+                    
+                    # Calculate capacity and status
+                    cap_info = capacity_map.get(code, {'City': city, 'Daily_Capacity': 20.0})
+                    daily_cap = cap_info['Daily_Capacity']
+                    
+                    if pred_jobs > daily_cap:
+                        durum = 'Kırmızı'
+                    elif pred_jobs >= 0.75 * daily_cap:
+                        durum = 'Sarı'
+                    else:
+                        durum = 'Yeşil'
+                        
+                    risk_map.append(WatchdogASCRisk(
+                        ASC_CODE=code,
+                        City=city,
+                        Predicted_Total_Jobs=pred_jobs,
+                        Durum=durum
+                    ))
+                    
+                # Add any missing service codes (completeness rule)
+                existing_codes = {str(item.ASC_CODE).strip() for item in risk_map}
+                for code, info in capacity_map.items():
+                    if code not in existing_codes:
+                        daily_cap = info['Daily_Capacity']
+                        # Use average of other services in the city, or daily_cap * 0.5
+                        city_jobs = [item.Predicted_Total_Jobs for item in risk_map if item.City == info['City']]
+                        city_avg = int(round(sum(city_jobs) / len(city_jobs) if city_jobs else daily_cap * 0.5))
+                        
+                        if city_avg > daily_cap:
+                            durum = 'Kırmızı'
+                        elif city_avg >= 0.75 * daily_cap:
+                            durum = 'Sarı'
+                        else:
+                            durum = 'Yeşil'
+                            
+                        risk_map.append(WatchdogASCRisk(
+                            ASC_CODE=code,
+                            City=info['City'],
+                            Predicted_Total_Jobs=city_avg,
+                            Durum=durum
+                        ))
+                        
+                seven_day_risk.append(WatchdogDailyRisk(
+                    day=day_str,
+                    risk_map=risk_map
+                ))
+                
+            return WatchdogOutput(seven_day_risk=seven_day_risk)
+        except Exception as e:
+            logger.error(f"Error calculating risk map locally in python: {e}")
+            raise e
 
 
 class CommanderAgent:

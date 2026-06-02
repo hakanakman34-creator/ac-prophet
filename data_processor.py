@@ -254,6 +254,51 @@ def load_and_preprocess_data(jobs_file: str, weather_file: str) -> pd.DataFrame:
     
     return merged_df
 
+def extract_multi_year_patterns(historical_file: str = 'Jobsdata_backup_old.xlsx') -> str:
+    """
+    Extracts high-level statistical patterns from the multi-year raw database.
+    Calculates the relative volume of jobs arriving on each day of the week,
+    proving to the ForecasterAgent that weekends are active.
+    """
+    try:
+        if not os.path.exists(historical_file):
+            return "No long-term historical file found. Assume normal weekend drops (e.g. Sat=80%, Sun=20% of weekdays)."
+            
+        df = pd.read_excel(historical_file)
+        if 'COMPLETE_DT' not in df.columns or 'COUNT' not in df.columns:
+            return "Historical file format unrecognizable. Assume normal weekend drops (e.g. Sat=80%, Sun=20% of weekdays)."
+            
+        df['COMPLETE_DT'] = pd.to_datetime(df['COMPLETE_DT'])
+        df['day_name'] = df['COMPLETE_DT'].dt.day_name()
+        
+        # Calculate sums per day
+        daily_sums = df.groupby('day_name')['COUNT'].sum()
+        
+        # Calculate average weekday volume
+        weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+        weekday_vols = [daily_sums.get(d, 0) for d in weekdays]
+        avg_weekday = sum(weekday_vols) / len(weekdays) if weekdays else 1.0
+        
+        sat_vol = daily_sums.get('Saturday', 0)
+        sun_vol = daily_sums.get('Sunday', 0)
+        
+        sat_ratio = round((sat_vol / avg_weekday) * 100, 1) if avg_weekday > 0 else 0
+        sun_ratio = round((sun_vol / avg_weekday) * 100, 1) if avg_weekday > 0 else 0
+        
+        pattern_str = (
+            f"[MULTI-YEAR HISTORICAL PATTERNS]\n"
+            f"Based on {len(df)} historical records spanning past years:\n"
+            f"- Average Weekday Volume: {round(avg_weekday, 1)} jobs\n"
+            f"- Saturday Volume: {sat_vol} jobs -> ({sat_ratio}% of a regular weekday)\n"
+            f"- Sunday Volume: {sun_vol} jobs -> ({sun_ratio}% of a regular weekday)\n"
+            f"CRITICAL RULE: Service centers ARE ACTIVE on weekends. "
+            f"You MUST NOT predict 0 incoming/completed jobs for weekends. Use the historical percentages above to estimate weekend volume compared to nearby weekdays."
+        )
+        return pattern_str
+    except Exception as e:
+        logger.error(f"Error extracting patterns: {e}")
+        return "Error reading multi-year history. Assume Sat=80% and Sun=20% of weekday volume."
+
 if __name__ == "__main__":
     df = load_and_preprocess_data('Jobsdata.xlsx', 'weatherdata.xlsx')
     print(df.head())
