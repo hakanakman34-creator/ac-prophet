@@ -80,12 +80,16 @@ except Exception as e:
     st.stop()
 
 # ----------------- SIDEBAR CONTROLS -----------------
-st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png", width=150)
-st.sidebar.markdown("---")
-st.sidebar.header("🎛️ Simulation Parameters")
-
-# Capacity is now configured in Admin Tab
-st.sidebar.markdown("*(ASC Team capacities are managed in the **Admin Tab**)*")
+st.sidebar.markdown(
+    """
+    <div style="text-align: left; margin-bottom: 10px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b4/Samsung_wordmark.svg" style="width: 150px; filter: brightness(0) invert(1);"/>
+        <h2 style="margin-top: 10px; margin-bottom: 15px; color: #e0e0e0; font-family: sans-serif; font-weight: 600; letter-spacing: 0.5px; font-size: 18px;">SETK CS</h2>
+    </div>
+    <hr style="margin-top: 0px; margin-bottom: 20px; border: 0; border-top: 1px solid #2e333d;"/>
+    """,
+    unsafe_allow_html=True
+)
 
 # Target Day Selector
 current_date = pd.Timestamp.today().normalize()
