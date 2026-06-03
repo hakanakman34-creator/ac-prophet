@@ -54,6 +54,45 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# ----------------- PASSWORD PROTECTION -----------------
+def check_password():
+    if "password_correct" not in st.session_state:
+        st.session_state["password_correct"] = False
+
+    if st.session_state["password_correct"]:
+        return True
+
+    # Center the login form using columns
+    _, col, _ = st.columns([1, 1.5, 1])
+    with col:
+        st.markdown("""
+        <div style="text-align: center; margin-bottom: 20px; margin-top: 80px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b4/Samsung_wordmark.svg" style="width: 180px; filter: brightness(0) invert(1); margin-bottom: 15px;"/>
+            <h3 style="color: #ffffff; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 22px; margin-bottom: 5px;">SETK CS</h3>
+            <p style="color: #888888; font-size: 14px;">Marmara Peak Season Operations Center</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        with st.form("login_form"):
+            username = st.text_input("Kullanıcı Adı", placeholder="Kullanıcı adınızı girin")
+            password = st.text_input("Şifre", type="password", placeholder="Şifrenizi girin")
+            submit = st.form_submit_button("Giriş Yap", use_container_width=True)
+            
+            if submit:
+                env_user = os.environ.get("APP_USERNAME", "admin")
+                env_pass = os.environ.get("APP_PASSWORD", "samsung2026")
+                
+                if username == env_user and password == env_pass:
+                    st.session_state["password_correct"] = True
+                    st.rerun()
+                else:
+                    st.error("❌ Kullanıcı adı veya şifre hatalı!")
+                    
+    return False
+
+if not check_password():
+    st.stop()
+
 st.title("❄️ Samsung HVAC Peak Season Operations Center")
 st.markdown("### Marmara Region Multi-Agent Forecasting & Dispatch Optimizer")
 
