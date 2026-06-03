@@ -1,0 +1,67 @@
+name: Streamlit Uygulamasını Uyanık Tut
+
+on:
+  schedule:
+    # Her 4 saatte bir çalışacak şekilde (Streamlit 12 saat hareketsizlikten sonra uyur)
+    - cron: '0 */4 * * *'
+  workflow_dispatch: # İstediğiniz zaman GitHub arayüzünden manuel tetiklemek için
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodu Klonla
+        uses: actions/checkout@v4
+
+      - name: Python Kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Gerekli Kütüphaneleri Yükle
+        run: |
+          pip install playwright
+          playwright install chromium
+
+      - name: Uygulamayı Ziyaret Et ve Uyku Durumunu Kontrol Et
+        run: |
+          python -c "
+          from playwright.sync_api import sync_playwright
+          import time
+          
+          url = 'https://acprophet.streamlit.app/'
+          
+          with sync_playwright() as p:
+              # Tarayıcıyı başlatıyoruz
+              browser = p.chromium.launch(headless=True)
+              page = browser.new_page()
+              
+              print(f'Uygulamaya bağlanılıyor: {url}')
+              page.goto(url)
+              
+              # Sayfanın yüklenmesi ve JavaScript'in çalışması için bekliyoruz
+              page.wait_for_timeout(15000)
+              
+              # Streamlit'in uyku modundaki buton metinlerini kontrol ediyoruz
+              # Genelde 'Yes, get this app back up!' veya 'Wake up' şeklinde butonlar bulunur
+              button_selector = 'button'
+              buttons = page.query_selector_all(button_selector)
+              
+              wake_button = None
+              for btn in buttons:
+                  text = btn.inner_text()
+                  if 'get this app' in text.lower() or 'wake up' in text.lower():
+                      wake_button = btn
+                      break
+              
+              if wake_button:
+                  print('Uygulama uyku modunda! Wake Up butonuna tıklanıyor...')
+                  wake_button.click()
+                  print('Tıklandı. Uygulamanın uyanması için 25 saniye bekleniyor...')
+                  page.wait_for_timeout(25000)
+                  print('Uygulama başarıyla uyandırıldı!')
+              else:
+                  print('Uygulama zaten uyanık ve aktif durumda.')
+                  
+              browser.close()
+          "
