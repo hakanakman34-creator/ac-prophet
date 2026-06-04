@@ -861,7 +861,7 @@ with tab1:
         if 'pipeline_tactical_orders' in st.session_state:
             st.markdown("---")
             st.success("🤖 **Commander Agent Completed**")
-            st.subheader("🫡 Tactical Commander Orders")
+            st.subheader("♞ Tactical Commander Orders")
             st.info(st.session_state['pipeline_tactical_orders'])
 
     elif not run_button:

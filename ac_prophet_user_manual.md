@@ -31,7 +31,7 @@ graph TD
     *   🟡 **Sarı (3.1 - 6 Gün):** İşlerde hafif yığılma var, yoğunluk izlenmeli.
     *   🔴 **Kırmızı (6.1+ Gün):** Kritik durum. İşlerin tamamlanması kabul edilemez sürelere ulaşıyor.
 
-### 🫡 1.3. Commander Agent (Taktiksel Komuta Ajanı)
+### ♞ 1.3. Commander Agent (Taktiksel Komuta Ajanı)
 *   **Görevi:** Watchdog tarafından tespit edilen riskli bölgelere anında müdahale etmek için operasyonel taktikler üretir.
 *   **Çalışma Mantığı:** "Kritik Durum" sınırını aşan (varsayılan: 4 gün) servisleri (Alıcılar) ve elinde atıl kapasite bulunan rahat durumdaki servisleri (Vericiler) tespit eder. Hangi servisten hangisine kaç ekip kaydırılması gerektiğini veya dış kaynak (outsource) desteği planlanması gerektiğini belirten resmi **Taktiksel Emirleri** yayınlar.
 
@@ -62,7 +62,7 @@ Ajanların çalışması bittikten sonra tüm çıktılar bu sekmede görselleş
 3.  **📊 7-Günlük Forecaster Projeksiyon Tablosu:**
     *   Ajanın ürettiği ham tahmin verilerini içerir.
     *   `Servis Adı Filtresi` ve `Tarih Filtresi` kullanarak sadece ilgilendiğiniz günün veya servisin tahmini iş, kapanan iş ve backlog detaylarını süzebilirsiniz.
-4.  **🫡 Tactical Commander Orders:**
+4.  **♞ Tactical Commander Orders:**
     *   Seçtiğiniz hedef gün (Target Day) için Commander ajanının yazdığı resmi operasyonel emirdir. Hangi servise nasıl destek olunacağı burada yazılı talimat olarak verilir.
 
 ---
