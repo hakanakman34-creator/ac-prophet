@@ -4,11 +4,14 @@ import plotly.express as px
 import json
 import logging
 import os
+import hashlib
+import time
 from dotenv import load_dotenv
 load_dotenv()
 from data_processor import load_and_preprocess_data, load_marmara_services_config, save_marmara_services_config, fetch_future_weather, extract_multi_year_patterns
 from agents import ForecasterAgent, WatchdogAgent, CommanderAgent, WatchdogOutput
 from capacity_agent import CapacityAgent
+from streamlit_cookies_controller import CookieController
 
 # Streamlit configurations
 st.set_page_config(
@@ -17,6 +20,9 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Initialize Cookie Controller for session persistence
+controller = CookieController()
 
 # Custom Styling (sleek premium theme matching)
 st.markdown("""
@@ -63,6 +69,19 @@ def check_password():
     if st.session_state["password_correct"]:
         return True
 
+    # Check cookies for persistent login session
+    cookies = controller.getAll()
+    env_user = os.environ.get("APP_USERNAME", "admin")
+    env_pass = os.environ.get("APP_PASSWORD", "samsung2026")
+    expected_token = hashlib.sha256(f"{env_user}:{env_pass}".encode()).hexdigest()
+
+    cookie_user = cookies.get("app_logged_in_user")
+    cookie_token = cookies.get("app_login_token")
+
+    if cookie_user == env_user and cookie_token == expected_token:
+        st.session_state["password_correct"] = True
+        return True
+
     # Center the login form using columns
     _, col, _ = st.columns([1, 1.5, 1])
     with col:
@@ -77,14 +96,15 @@ def check_password():
         with st.form("login_form"):
             username = st.text_input("Kullanıcı Adı", placeholder="Kullanıcı adınızı girin")
             password = st.text_input("Şifre", type="password", placeholder="Şifrenizi girin")
+            remember_me = st.checkbox("Beni Hatırla", value=True)
             submit = st.form_submit_button("Giriş Yap", use_container_width=True)
             
             if submit:
-                env_user = os.environ.get("APP_USERNAME", "admin")
-                env_pass = os.environ.get("APP_PASSWORD", "samsung2026")
-                
                 if username == env_user and password == env_pass:
                     st.session_state["password_correct"] = True
+                    if remember_me:
+                        controller.set("app_logged_in_user", env_user)
+                        controller.set("app_login_token", expected_token)
                     st.rerun()
                 else:
                     st.error("❌ Kullanıcı adı veya şifre hatalı!")
@@ -146,6 +166,14 @@ target_day_str = st.sidebar.selectbox(
 st.sidebar.markdown("---")
 
 run_button = st.sidebar.button("🚀 Run Multi-Agent Optimizer", width='stretch')
+
+st.sidebar.markdown("---")
+if st.sidebar.button("🚪 Çıkış Yap", use_container_width=True, key="logout_sidebar_btn"):
+    controller.remove("app_logged_in_user")
+    controller.remove("app_login_token")
+    st.session_state["password_correct"] = False
+    time.sleep(0.5)
+    st.rerun()
 
 # ----------------- UI TABS -----------------
 tab1, tab2, tab3 = st.tabs(["📊 Operations Dashboard", "📁 Data Management", "⚙️ Admin (Marmara Services)"])
@@ -306,6 +334,38 @@ with tab3:
         key="commander_threshold",
         help="Eğer bir servisin tahmini bekleme süresi bu gün sayısının altındaysa, Commander o servisin destek ihtiyacı olmadığını varsayar."
     )
+    
+    st.markdown("---")
+    with st.expander("☁️ Hava Durumu Veri Kaynağı Ayarları", expanded=False):
+        settings_file = "settings.json"
+        if os.path.exists(settings_file):
+            with open(settings_file, "r", encoding="utf-8") as f:
+                app_settings = json.load(f)
+        else:
+            app_settings = {"weather_source": "Open-Meteo", "visual_crossing_api_key": ""}
+
+        weather_source = st.selectbox(
+            "Hava Durumu Kaynağı Seçin",
+            options=["Open-Meteo", "Visual Crossing"],
+            index=0 if app_settings.get("weather_source", "Open-Meteo") == "Open-Meteo" else 1
+        )
+        
+        vc_api_key = st.text_input(
+            "Visual Crossing API Key",
+            value=app_settings.get("visual_crossing_api_key", ""),
+            type="password",
+            help="Sadece Visual Crossing seçiliyse kullanılır."
+        )
+        
+        if st.button("💾 Hava Durumu Ayarlarını Kaydet"):
+            app_settings["weather_source"] = weather_source
+            app_settings["visual_crossing_api_key"] = vc_api_key
+            with open(settings_file, "w", encoding="utf-8") as f:
+                json.dump(app_settings, f, ensure_ascii=False, indent=4)
+            st.success("✅ Hava durumu ayarları başarıyla kaydedildi!")
+            st.rerun()
+
+    st.markdown("---")
     
     st.markdown("Edit team quantities and individual completion capacities for each ASC. Changes will automatically update predictions.")
     

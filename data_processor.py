@@ -112,8 +112,24 @@ def calculate_heat_index(temp_c, humidity):
 
 def fetch_future_weather(cities: list) -> pd.DataFrame:
     """
-    Fetches 7-day future weather forecasts for a list of cities using Open-Meteo.
+    Fetches 7-day future weather forecasts for a list of cities using Open-Meteo or Visual Crossing based on settings.
     """
+    import os
+    import json
+    
+    settings_file = "settings.json"
+    weather_source = "Open-Meteo"
+    vc_api_key = ""
+    
+    if os.path.exists(settings_file):
+        try:
+            with open(settings_file, "r", encoding="utf-8") as f:
+                app_settings = json.load(f)
+                weather_source = app_settings.get("weather_source", "Open-Meteo")
+                vc_api_key = app_settings.get("visual_crossing_api_key", "")
+        except Exception as e:
+            logger.error(f"Failed to read settings.json: {e}")
+
     # Quick coordinate mapping for Marmara cities
     city_coords = {
         'ISTANBUL': (41.0082, 28.9784),
@@ -142,51 +158,93 @@ def fetch_future_weather(cities: list) -> pd.DataFrame:
         # Default to Istanbul coords if not found
         lat, lon = city_coords.get(city.upper(), (41.0082, 28.9784))
         
-        url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&daily=temperature_2m_max,temperature_2m_min,relative_humidity_2m_max&timezone=auto"
-        
         try:
-            res = requests.get(url, timeout=10)
-            data = res.json()
-            daily = data.get('daily', {})
-            dates = daily.get('time', [])
-            t_max = daily.get('temperature_2m_max', [])
-            t_min = daily.get('temperature_2m_min', [])
-            h_max = daily.get('relative_humidity_2m_max', [])
-            
-            for i in range(len(dates)):
-                try:
-                    t_m = float(t_max[i])
-                    t_mn = float(t_min[i])
-                    h_m = float(h_max[i])
-                except (TypeError, ValueError):
-                    t_m, t_mn, h_m = 0.0, 0.0, 0.0
-                    
-                avg_temp = round((t_m + t_mn) / 2, 1)
-                hi_temp = calculate_heat_index(avg_temp, h_m)
+            if weather_source == "Visual Crossing" and vc_api_key:
+                url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{lat},{lon}/next7days?unitGroup=metric&include=days&key={vc_api_key}&contentType=json"
+                res = requests.get(url, timeout=10)
+                if res.status_code != 200:
+                    raise Exception(f"Visual Crossing returned status code {res.status_code}: {res.text}")
+                data = res.json()
+                days = data.get('days', [])
                 
-                import datetime
-                try:
-                    dt = datetime.datetime.strptime(dates[i], "%Y-%m-%d")
-                    days_tr = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"]
-                    haftanin_gunu = days_tr[dt.weekday()]
-                except Exception:
-                    haftanin_gunu = ""
+                for day in days:
+                    date_str = day.get('datetime', '')
+                    if not date_str: continue
+                    t_m = float(day.get('tempmax', 0.0))
+                    t_mn = float(day.get('tempmin', 0.0))
+                    h_m = float(day.get('humidity', 0.0))
                     
-                all_forecasts.append({
-                    'Tarih': dates[i],
-                    'Yıl': dates[i][:4],
-                    'Ay': dates[i][5:7],
-                    'Gün': dates[i][8:10],
-                    'Haftanin_Gunu': haftanin_gunu,
-                    'City': city,
-                    'Ortalama_Sicaklik': avg_temp,
-                    'Hissedilen_Sicaklik': hi_temp,
-                    'Maksimum_Sicaklik': t_m,
-                    'Minimum_Sicaklik': t_mn,
-                    'Ortalama_Nem': h_m
-                })
+                    avg_temp = round((t_m + t_mn) / 2, 1)
+                    hi_temp = calculate_heat_index(avg_temp, h_m)
+                    
+                    import datetime
+                    try:
+                        dt = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+                        days_tr = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"]
+                        haftanin_gunu = days_tr[dt.weekday()]
+                    except Exception:
+                        haftanin_gunu = ""
+                        
+                    all_forecasts.append({
+                        'Tarih': date_str,
+                        'Yıl': date_str[:4],
+                        'Ay': date_str[5:7],
+                        'Gün': date_str[8:10],
+                        'Haftanin_Gunu': haftanin_gunu,
+                        'City': city,
+                        'Ortalama_Sicaklik': avg_temp,
+                        'Hissedilen_Sicaklik': hi_temp,
+                        'Maksimum_Sicaklik': t_m,
+                        'Minimum_Sicaklik': t_mn,
+                        'Ortalama_Nem': h_m
+                    })
+            else:
+                # Open-Meteo logic
+                url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&daily=temperature_2m_max,temperature_2m_min,relative_humidity_2m_max&timezone=auto"
+                res = requests.get(url, timeout=10)
+                if res.status_code != 200:
+                    raise Exception(f"Open-Meteo returned status code {res.status_code}: {res.text}")
+                data = res.json()
+                daily = data.get('daily', {})
+                dates = daily.get('time', [])
+                t_max = daily.get('temperature_2m_max', [])
+                t_min = daily.get('temperature_2m_min', [])
+                h_max = daily.get('relative_humidity_2m_max', [])
+                
+                for i in range(len(dates)):
+                    try:
+                        t_m = float(t_max[i])
+                        t_mn = float(t_min[i])
+                        h_m = float(h_max[i])
+                    except (TypeError, ValueError):
+                        t_m, t_mn, h_m = 0.0, 0.0, 0.0
+                        
+                    avg_temp = round((t_m + t_mn) / 2, 1)
+                    hi_temp = calculate_heat_index(avg_temp, h_m)
+                    
+                    import datetime
+                    try:
+                        dt = datetime.datetime.strptime(dates[i], "%Y-%m-%d")
+                        days_tr = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"]
+                        haftanin_gunu = days_tr[dt.weekday()]
+                    except Exception:
+                        haftanin_gunu = ""
+                        
+                    all_forecasts.append({
+                        'Tarih': dates[i],
+                        'Yıl': dates[i][:4],
+                        'Ay': dates[i][5:7],
+                        'Gün': dates[i][8:10],
+                        'Haftanin_Gunu': haftanin_gunu,
+                        'City': city,
+                        'Ortalama_Sicaklik': avg_temp,
+                        'Hissedilen_Sicaklik': hi_temp,
+                        'Maksimum_Sicaklik': t_m,
+                        'Minimum_Sicaklik': t_mn,
+                        'Ortalama_Nem': h_m
+                    })
         except Exception as e:
-            logger.error(f"Failed to fetch weather for {city}: {e}")
+            logger.error(f"Failed to fetch weather for {city} via {weather_source}: {e}")
             
     return pd.DataFrame(all_forecasts)
 
