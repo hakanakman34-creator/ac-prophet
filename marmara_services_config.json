@@ -5,7 +5,7 @@
         "Region": "İSTANBUL",
         "City": "İSTANBUL",
         "Team Quantity": 11,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 2207663,
@@ -13,7 +13,7 @@
         "Region": "İSTANBUL",
         "City": "İSTANBUL",
         "Team Quantity": 8,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 7397528,
@@ -29,7 +29,7 @@
         "Region": "İSTANBUL",
         "City": "İSTANBUL",
         "Team Quantity": 20,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 7325488,
@@ -37,7 +37,7 @@
         "Region": "İSTANBUL",
         "City": "İSTANBUL",
         "Team Quantity": 20,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 3368175,
@@ -45,7 +45,7 @@
         "Region": "İSTANBUL",
         "City": "İSTANBUL",
         "Team Quantity": 15,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 3864716,
@@ -53,7 +53,7 @@
         "Region": "İSTANBUL",
         "City": "İSTANBUL",
         "Team Quantity": 19,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 3367403,
@@ -69,7 +69,7 @@
         "Region": "İSTANBUL",
         "City": "İSTANBUL",
         "Team Quantity": 8,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 7079978,
@@ -77,7 +77,7 @@
         "Region": "İSTANBUL",
         "City": "TEKİRDAĞ",
         "Team Quantity": 6,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 3367739,
@@ -85,7 +85,7 @@
         "Region": "İSTANBUL",
         "City": "TEKİRDAĞ",
         "Team Quantity": 2,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 7072286,
@@ -93,7 +93,7 @@
         "Region": "İSTANBUL",
         "City": "EDİRNE",
         "Team Quantity": 2,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 3367743,
@@ -101,7 +101,7 @@
         "Region": "İSTANBUL",
         "City": "ÇANAKKALE",
         "Team Quantity": 6,
-        "Job Completion Capacity": 7.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 4214024,
@@ -109,7 +109,7 @@
         "Region": "İSTANBUL",
         "City": "EDİRNE",
         "Team Quantity": 4,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 7357843,
@@ -117,7 +117,7 @@
         "Region": "İSTANBUL",
         "City": "ÇANAKKALE",
         "Team Quantity": 9,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 7077448,
@@ -125,7 +125,7 @@
         "Region": "İSTANBUL",
         "City": "ÇANAKKALE",
         "Team Quantity": 2,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 2278099,
@@ -133,7 +133,7 @@
         "Region": "İSTANBUL",
         "City": "BURSA",
         "Team Quantity": 30,
-        "Job Completion Capacity": 2.5
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 7077738,
@@ -141,7 +141,7 @@
         "Region": "İSTANBUL",
         "City": "BURSA",
         "Team Quantity": 2,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 4493936,
@@ -149,7 +149,7 @@
         "Region": "İSTANBUL",
         "City": "BURSA",
         "Team Quantity": 4,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 5284531,
@@ -157,7 +157,7 @@
         "Region": "İSTANBUL",
         "City": "BURSA",
         "Team Quantity": 2,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 5954007,
@@ -165,7 +165,7 @@
         "Region": "İSTANBUL",
         "City": "KOCAELİ",
         "Team Quantity": 8,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 7081903,
@@ -173,7 +173,7 @@
         "Region": "İSTANBUL",
         "City": "KOCAELİ",
         "Team Quantity": 14,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 9366541,
@@ -181,7 +181,7 @@
         "Region": "İSTANBUL",
         "City": "SAKARYA",
         "Team Quantity": 11,
-        "Job Completion Capacity": 5.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 6435172,
@@ -189,7 +189,7 @@
         "Region": "İSTANBUL",
         "City": "DÜZCE",
         "Team Quantity": 7,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     },
     {
         "ASC_CODE": 7077736,
@@ -197,6 +197,6 @@
         "Region": "İSTANBUL",
         "City": "YALOVA",
         "Team Quantity": 3,
-        "Job Completion Capacity": 4.0
+        "Job Completion Capacity": 3.0
     }
 ]
