@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from data_processor import load_and_preprocess_data, load_marmara_services_config, save_marmara_services_config, fetch_future_weather, extract_multi_year_patterns
 from agents import ForecasterAgent, WatchdogAgent, CommanderAgent, WatchdogOutput
+from capacity_agent import CapacityAgent
 
 # Streamlit configurations
 st.set_page_config(
@@ -325,6 +326,45 @@ with tab3:
             st.rerun()
         except Exception as e:
             st.error(f"Failed to save configurations: {e}")
+
+    st.markdown("---")
+    st.subheader("🔍 Yapay Zeka ile Kapasite Optimizasyonu")
+    st.markdown("Mevcut kapasite ayarlarını ve son dönem (7 günlük) gerçekleşen iş bitirme performansını analiz ederek, günlük kişi başı kapasite hedeflerinde (Job Completion Capacity) artış/azalış önerilerini alın.")
+    
+    if st.button("🔍 Kapasite Optimizasyon Analizi Başlat", type="primary"):
+        with st.spinner("⏳ Capacity Agent verileri inceliyor... Lütfen bekleyin."):
+            try:
+                # Prepare data for CapacityAgent
+                current_config_str = edited_services_df[['ASC_CODE', 'ASC_NAME', 'Team Quantity', 'Job Completion Capacity']].to_string(index=False)
+                
+                # Fetch recent history (last 7 days of actual completion)
+                history_df = pd.read_excel('Jobsdata.xlsx')
+                history_df['POSTING_DATE'] = pd.to_datetime(history_df['POSTING_DATE'])
+                recent_history = history_df[history_df['Region'] == 'İSTANBUL'].sort_values('POSTING_DATE', ascending=False)
+                recent_7_days = recent_history.head(1000) # Give enough context
+                
+                # Aggregate total completions per service over this period
+                perf_summary = recent_7_days.groupby(['ASC_CODE', 'ASC_NAME'])[['COMPLETED_JOBS', 'ACTIVE_BACKLOG']].sum().reset_index()
+                perf_summary_str = perf_summary.to_string(index=False)
+                
+                capacity_agent = CapacityAgent()
+                recommendations_json = capacity_agent.analyze_capacity(current_config_str, perf_summary_str)
+                
+                st.session_state['capacity_recommendations'] = json.loads(recommendations_json)
+                st.success("✅ Analiz tamamlandı!")
+            except Exception as e:
+                st.error(f"Kapasite analizi sırasında hata oluştu: {e}")
+
+    if 'capacity_recommendations' in st.session_state:
+        recs = st.session_state['capacity_recommendations']
+        if recs:
+            st.markdown("#### Yapay Zeka Kapasite Önerileri")
+            recs_df = pd.DataFrame(recs)
+            st.dataframe(recs_df, use_container_width=True)
+            
+            st.warning("⚠️ Önerileri uygulamak için tablodan 'Job Completion Capacity' değerlerini manuel olarak güncelleyip yukarıdan 'Save Configurations' butonuna basınız.")
+        else:
+            st.info("Değişiklik önerilmedi.")
             
     st.markdown("---")
     st.header("🗺️ Service District Mapping")
