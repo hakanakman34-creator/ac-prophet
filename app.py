@@ -388,6 +388,7 @@ with tab3:
             with open(settings_file, "w", encoding="utf-8") as f:
                 json.dump(app_settings, f, ensure_ascii=False, indent=4)
             st.success("✅ Hava durumu ayarları başarıyla kaydedildi!")
+            st.cache_data.clear()
             st.rerun()
 
     st.markdown("---")
