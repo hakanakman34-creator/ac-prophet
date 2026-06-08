@@ -130,6 +130,14 @@ def fetch_future_weather(cities: list) -> pd.DataFrame:
         except Exception as e:
             logger.error(f"Failed to read settings.json: {e}")
 
+    try:
+        import streamlit as st
+        if st.secrets.get("visual_crossing_api_key"):
+            vc_api_key = st.secrets.get("visual_crossing_api_key")
+            weather_source = "Visual Crossing"
+    except Exception:
+        pass
+
     # Quick coordinate mapping for Marmara cities
     city_coords = {
         'ISTANBUL': (41.0082, 28.9784),
@@ -201,7 +209,8 @@ def fetch_future_weather(cities: list) -> pd.DataFrame:
             else:
                 # Open-Meteo logic
                 url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&daily=temperature_2m_max,temperature_2m_min,relative_humidity_2m_max&timezone=auto"
-                res = requests.get(url, timeout=10)
+                headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+                res = requests.get(url, headers=headers, timeout=15)
                 if res.status_code != 200:
                     raise Exception(f"Open-Meteo returned status code {res.status_code}: {res.text}")
                 data = res.json()
