@@ -133,6 +133,10 @@ def fetch_services_data_v2():
     # Load freshly to avoid stale cached configurations
     return load_marmara_services_config('ServiceList.xlsx')
 
+@st.cache_data(ttl=3600)
+def fetch_cached_weather(cities_tuple):
+    return fetch_future_weather(list(cities_tuple))
+
 try:
     df = fetch_data_v2()
     services_df = fetch_services_data_v2()
@@ -534,7 +538,7 @@ with tab1:
         if not has_bilecik:
             cities_list.append("BİLECİK")
             
-        forecast_df = fetch_future_weather(cities_list)
+        forecast_df = fetch_cached_weather(tuple(cities_list))
         
         if not forecast_df.empty:
             # Dropdown to filter by city
@@ -597,7 +601,7 @@ with tab1:
             if not has_bilecik:
                 cities_list.append("BİLECİK")
                 
-            forecast_df = fetch_future_weather(cities_list)
+            forecast_df = fetch_cached_weather(tuple(cities_list))
             
             if forecast_df.empty:
                 st.warning("Could not fetch future weather. Please check your connection.")

@@ -246,6 +246,9 @@ def fetch_future_weather(cities: list) -> pd.DataFrame:
         except Exception as e:
             logger.error(f"Failed to fetch weather for {city} via {weather_source}: {e}")
             
+        import time
+        time.sleep(0.3)
+        
     return pd.DataFrame(all_forecasts)
 
 def load_and_preprocess_data(jobs_file: str, weather_file: str) -> pd.DataFrame:
