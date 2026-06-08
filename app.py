@@ -8,7 +8,7 @@ import hashlib
 import time
 from dotenv import load_dotenv
 load_dotenv()
-from data_processor import load_and_preprocess_data, load_marmara_services_config, save_marmara_services_config, fetch_future_weather, extract_multi_year_patterns
+from data_processor import load_and_preprocess_data, load_marmara_services_config, save_marmara_services_config, fetch_future_weather, extract_multi_year_patterns, save_prediction_history
 from agents import ForecasterAgent, WatchdogAgent, CommanderAgent, WatchdogOutput
 from capacity_agent import CapacityAgent
 from streamlit_cookies_controller import CookieController
@@ -176,7 +176,7 @@ if st.sidebar.button("🚪 Çıkış Yap", use_container_width=True, key="logout
     st.rerun()
 
 # ----------------- UI TABS -----------------
-tab1, tab2, tab3 = st.tabs(["📊 Operations Dashboard", "📁 Data Management", "⚙️ Admin (Marmara Services)"])
+tab1, tab2, tab3, tab4 = st.tabs(["📊 Operations Dashboard", "📁 Data Management", "⚙️ Admin (Marmara Services)", "📈 Tahmin Doğruluğu Analizi"])
 
 with tab2:
     st.header("📁 Data Management")
@@ -728,6 +728,12 @@ with tab1:
 
                     st.success("🤖 **Watchdog Agent Completed**")
 
+                    # SAVE PREDICTIONS TO HISTORY
+                    try:
+                        save_prediction_history(risk_output.model_dump().get('seven_day_risk', []))
+                    except Exception as e:
+                        st.warning(f"Geçmiş tahmin verileri kaydedilemedi: {e}")
+
                     # Build district-level map_df
                     try:
                         with open(r'marmara_ilce_geojson.json', 'r', encoding='utf-8') as f:
@@ -947,3 +953,81 @@ with tab1:
 
     elif not run_button:
         st.info("👈 Use the parameters on the sidebar and click **Run Multi-Agent Optimizer** to test the system!")
+
+with tab4:
+    st.header("📈 Tahmin Doğruluğu Analizi")
+    st.markdown("Geçmişte sistem tarafından üretilmiş 7 günlük tahminlerin (Forecaster Agent), gerçekleşen yeni iş adetleriyle (NEW_ASSIGNED_JOBS) karşılaştırması.")
+    
+    if os.path.exists("prediction_history.json"):
+        with open("prediction_history.json", "r", encoding="utf-8") as f:
+            pred_data = json.load(f)
+            
+        if not pred_data:
+            st.info("Kayıtlı tahmin verisi bulunamadı. Yeni tahminler yapıldıkça burada listelenecektir.")
+        else:
+            df_pred = pd.DataFrame(pred_data)
+            
+            try:
+                df_jobs = pd.read_excel('Jobsdata.xlsx')
+                if 'CREATION_DATE' in df_jobs.columns and 'NEW_ASSIGNED_JOBS' in df_jobs.columns and 'ASC_CODE' in df_jobs.columns:
+                    df_jobs['CREATION_DATE'] = pd.to_datetime(df_jobs['CREATION_DATE']).dt.strftime('%Y-%m-%d')
+                    df_jobs['ASC_CODE'] = df_jobs['ASC_CODE'].astype(str).str.strip()
+                    
+                    actual_jobs = df_jobs.groupby(['CREATION_DATE', 'ASC_CODE'])['NEW_ASSIGNED_JOBS'].sum().reset_index()
+                    
+                    merged_df = pd.merge(
+                        df_pred, 
+                        actual_jobs, 
+                        left_on=['target_date', 'ASC_CODE'], 
+                        right_on=['CREATION_DATE', 'ASC_CODE'], 
+                        how='inner'
+                    )
+                    
+                    if merged_df.empty:
+                        st.warning("Kayıtlı tahminlerin hedeflenen tarihleri için henüz Jobsdata.xlsx içerisinde gerçekleşen veri (NEW_ASSIGNED_JOBS) bulunamadı. Lütfen daha güncel bir Jobsdata.xlsx yükleyin veya hedeflenen tarihlerin gelmesini bekleyin.")
+                        st.dataframe(df_pred, use_container_width=True)
+                    else:
+                        merged_df['Error_Count'] = abs(merged_df['Predicted_Total_Jobs'] - merged_df['NEW_ASSIGNED_JOBS'])
+                        
+                        st.subheader("Filtreler")
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            target_dates = sorted(merged_df['target_date'].unique().tolist(), reverse=True)
+                            selected_date = st.selectbox("Tarih Seçin", ["Tümü"] + target_dates)
+                        with col2:
+                            asc_codes = sorted(merged_df['ASC_CODE'].unique().tolist())
+                            selected_asc = st.selectbox("Servis Kodu Seçin (ASC_CODE)", ["Tümü"] + asc_codes)
+                            
+                        filtered_df = merged_df.copy()
+                        if selected_date != "Tümü":
+                            filtered_df = filtered_df[filtered_df['target_date'] == selected_date]
+                        if selected_asc != "Tümü":
+                            filtered_df = filtered_df[filtered_df['ASC_CODE'] == selected_asc]
+                            
+                        st.dataframe(filtered_df[['target_date', 'ASC_CODE', 'Predicted_Total_Jobs', 'NEW_ASSIGNED_JOBS', 'Error_Count', 'prediction_timestamp']], use_container_width=True)
+                        
+                        if not filtered_df.empty:
+                            mae = filtered_df['Error_Count'].mean()
+                            total_pred = filtered_df['Predicted_Total_Jobs'].sum()
+                            total_actual = filtered_df['NEW_ASSIGNED_JOBS'].sum()
+                            
+                            mc1, mc2 = st.columns(2)
+                            mc1.metric("Ortalama Hata (MAE - İş Adedi)", f"{mae:.1f}")
+                            mc2.metric("Toplam Tahmin Edilen vs Gerçekleşen", f"{total_pred} / {total_actual}")
+                            
+                            fig = px.bar(
+                                filtered_df, 
+                                x='ASC_CODE', 
+                                y=['Predicted_Total_Jobs', 'NEW_ASSIGNED_JOBS'],
+                                barmode='group',
+                                title="Servis Bazlı Tahmin vs Gerçekleşen Karşılaştırması",
+                                labels={'value': 'İş Adedi', 'variable': 'Metrik'}
+                            )
+                            st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.error("Jobsdata.xlsx dosyasında 'CREATION_DATE', 'NEW_ASSIGNED_JOBS' veya 'ASC_CODE' sütunları bulunamadı.")
+            except Exception as e:
+                st.error(f"Jobsdata.xlsx yüklenirken veya birleştirilirken hata oluştu: {e}")
+                
+    else:
+        st.info("Henüz oluşturulmuş bir tahmin kaydı (`prediction_history.json`) bulunmuyor. Sistemden yeni bir tahmin çalıştırdığınızda burada listelenecektir.")

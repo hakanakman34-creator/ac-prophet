@@ -357,6 +357,61 @@ def extract_multi_year_patterns(historical_file: str = 'Jobsdata_backup_old.xlsx
         logger.error(f"Error extracting patterns: {e}")
         return "Error reading multi-year history. Assume Sat=80% and Sun=20% of weekday volume."
 
+PREDICTION_HISTORY_FILE = "prediction_history.json"
+
+def save_prediction_history(seven_day_risk_list: list):
+    """
+    Saves generated predictions to a local JSON file for later accuracy analysis.
+    seven_day_risk_list is the list of daily risk map dictionaries.
+    """
+    history = []
+    if os.path.exists(PREDICTION_HISTORY_FILE):
+        try:
+            with open(PREDICTION_HISTORY_FILE, 'r', encoding='utf-8') as f:
+                history = json.load(f)
+        except Exception as e:
+            logger.error(f"Error reading prediction history: {e}")
+            history = []
+            
+    from datetime import datetime
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Use a dictionary to overwrite existing predictions for the same target_date & ASC_CODE
+    # so we keep the most recent prediction if it is run multiple times.
+    # Alternatively, just append. The user probably wants the latest prediction for a day.
+    # Let's just keep the most recent one by using a dict key.
+    
+    history_dict = {}
+    for r in history:
+        # key: target_date + ASC_CODE
+        k = f"{r.get('target_date')}_{r.get('ASC_CODE')}"
+        history_dict[k] = r
+    
+    for daily in seven_day_risk_list:
+        day_str = str(daily.get('day', '')).strip()
+        risk_map = daily.get('risk_map', [])
+        for item in risk_map:
+            asc_code = str(item.get('ASC_CODE', '')).strip()
+            pred_jobs = item.get('Predicted_Total_Jobs', 0)
+            
+            record = {
+                "prediction_timestamp": now_str,
+                "target_date": day_str,
+                "ASC_CODE": asc_code,
+                "Predicted_Total_Jobs": pred_jobs
+            }
+            k = f"{day_str}_{asc_code}"
+            history_dict[k] = record
+            
+    new_history = list(history_dict.values())
+            
+    try:
+        with open(PREDICTION_HISTORY_FILE, 'w', encoding='utf-8') as f:
+            json.dump(new_history, f, ensure_ascii=False, indent=4)
+        logger.info(f"Successfully saved predictions to {PREDICTION_HISTORY_FILE}")
+    except Exception as e:
+        logger.error(f"Error saving prediction history: {e}")
+
 if __name__ == "__main__":
     df = load_and_preprocess_data('Jobsdata.xlsx', 'weatherdata.xlsx')
     print(df.head())
