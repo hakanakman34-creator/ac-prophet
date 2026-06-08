@@ -974,7 +974,7 @@ with tab1:
             st.info(st.session_state['pipeline_tactical_orders'])
 
     elif not run_button:
-        st.info("👈 Use the parameters on the sidebar and click **Run Multi-Agent Optimizer** to test the system!")
+        st.info("👈 Analizi ve optimizasyonu başlatmak için sol menüden parametreleri belirleyip **Run Multi-Agent Optimizer** butonuna basın.")
 
 with tab4:
     st.header("📈 Tahmin Doğruluğu Analizi")
