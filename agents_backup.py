@@ -121,30 +121,25 @@ Output language: Turkish."""
             if 'City' not in capacity_df.columns:
                 raise ValueError("City column missing in capacity data JSON.")
                 
-            cities_list = list(capacity_df['City'].dropna().unique())
-            batch_size = 4
-            city_batches = [cities_list[i:i + batch_size] for i in range(0, len(cities_list), batch_size)]
+            cities = capacity_df['City'].dropna().unique()
+            logger.info(f"Splitting forecasting into {len(cities)} cities for parallel processing: {list(cities)}")
             
-            logger.info(f"Splitting forecasting into {len(city_batches)} batches (max {batch_size} cities/batch) to optimize AI credits.")
-            
-            def predict_batch(batch):
-                batch_capacity = capacity_df[capacity_df['City'].isin(batch)]
-                batch_hist = hist_df[hist_df['City'].isin(batch)]
-                batch_weather = weather_df[weather_df['City'].isin(batch)]
+            def predict_city(city):
+                city_capacity = capacity_df[capacity_df['City'] == city]
+                city_hist = hist_df[hist_df['City'] == city]
+                city_weather = weather_df[weather_df['City'] == city]
                 
                 # Convert back to clean text tables for Gemini prompt readability
-                batch_capacity_str = batch_capacity[['ASC_CODE', 'ASC_NAME', 'Daily_Capacity']].to_string(index=False)
-                batch_hist_str = batch_hist.to_string(index=False) if not batch_hist.empty else "No recent history"
-                batch_weather_str = batch_weather.to_string(index=False) if not batch_weather.empty else "No weather forecast"
+                city_capacity_str = city_capacity[['ASC_CODE', 'ASC_NAME', 'Daily_Capacity']].to_string(index=False)
+                city_hist_str = city_hist.to_string(index=False) if not city_hist.empty else "No recent history"
+                city_weather_str = city_weather.to_string(index=False) if not city_weather.empty else "No weather forecast"
                 
-                cities_str = ", ".join(batch)
                 prompt = (
-                    f"Historical Context for {cities_str}:\n{batch_hist_str}\n\n"
-                    f"Capacity Data for {cities_str}:\n{batch_capacity_str}\n\n"
-                    f"7-Day Weather Forecast for {cities_str}:\n{batch_weather_str}\n\n"
+                    f"Historical Context for {city}:\n{city_hist_str}\n\n"
+                    f"Capacity Data for {city}:\n{city_capacity_str}\n\n"
+                    f"7-Day Weather Forecast for {city}:\n{city_weather_str}\n\n"
                     f"Multi-Year Historical Patterns:\n{multi_year_patterns}\n\n"
-                    f"CRITICAL: You must include every single ASC_CODE shown in the capacity data above in your output.\n"
-                    f"Please generate the forecast for the following cities: {cities_str}."
+                    f"Please generate the forecast for the city: {city}."
                 )
                 
                 response = client.models.generate_content(
@@ -157,19 +152,18 @@ Output language: Turkish."""
                         temperature=0.2,
                     ),
                 )
-                return cities_str, ForecasterOutput.model_validate_json(response.text)
+                return city, ForecasterOutput.model_validate_json(response.text)
 
             results = {}
-            with concurrent.futures.ThreadPoolExecutor(max_workers=len(city_batches)) as executor:
-                future_to_batch = {executor.submit(predict_batch, batch): batch for batch in city_batches}
-                for future in concurrent.futures.as_completed(future_to_batch):
-                    batch = future_to_batch[future]
-                    batch_str = ", ".join(batch)
+            with concurrent.futures.ThreadPoolExecutor(max_workers=len(cities)) as executor:
+                future_to_city = {executor.submit(predict_city, city): city for city in cities}
+                for future in concurrent.futures.as_completed(future_to_city):
+                    city = future_to_city[future]
                     try:
-                        batch_name, output = future.result()
-                        results[batch_name] = output
+                        city_name, output = future.result()
+                        results[city_name] = output
                     except Exception as exc:
-                        logger.error(f"Batch {batch_str} forecast failed: {exc}")
+                        logger.error(f"City {city} forecast failed: {exc}")
                         raise exc
 
             # Merge results by day
