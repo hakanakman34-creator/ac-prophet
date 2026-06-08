@@ -322,6 +322,27 @@ with tab2:
         except Exception as e:
             st.error(f"Dosya okuma hatası: {e}")
 
+    st.markdown("---")
+    
+    # Section 3: Download Complete Excel
+    st.subheader("3. Tüm Geçmiş Veriyi İndir")
+    st.markdown("Sistemde kayıtlı olan tüm geçmiş iş verilerini (`Jobsdata.xlsx`) tek seferde bilgisayarınıza indirebilirsiniz.")
+    try:
+        if os.path.exists('Jobsdata.xlsx'):
+            with open('Jobsdata.xlsx', 'rb') as f:
+                excel_bytes = f.read()
+            st.download_button(
+                label="📥 Tüm Geçmiş Veriyi İndir (Jobsdata.xlsx)",
+                data=excel_bytes,
+                file_name="Jobsdata.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                use_container_width=True
+            )
+        else:
+            st.warning("⚠️ Jobsdata.xlsx dosyası bulunamadı!")
+    except Exception as e:
+        st.error(f"Dosya okuma hatası: {e}")
+
 
 
 with tab3:
