@@ -827,26 +827,7 @@ with tab1:
         st.markdown("---")
         st.header("⚡ Multi-Agent Pipeline Output")
         
-        # Download Excel Report button
-        try:
-            import io
-            report_buffer = io.BytesIO()
-            with pd.ExcelWriter(report_buffer, engine='openpyxl') as writer:
-                if 'pipeline_forecast_df' in st.session_state:
-                    st.session_state['pipeline_forecast_df'].to_excel(writer, index=False, sheet_name='7-Günlük Projeksiyon')
-                if 'pipeline_map_df' in st.session_state:
-                    st.session_state['pipeline_map_df'].to_excel(writer, index=False, sheet_name='İlçe Bekleme Süreleri')
-            report_buffer.seek(0)
-            
-            st.download_button(
-                label="📥 7-Günlük Tahmin Raporunu İndir (.xlsx)",
-                data=report_buffer,
-                file_name=f"AC_Prophet_Tahmin_Raporu_{target_day_str}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                use_container_width=True
-            )
-        except Exception as e:
-            st.error(f"Rapor hazırlama hatası: {e}")
+
             
         st.subheader("🛡️ Risk Map Visualizer")
 

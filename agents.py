@@ -160,7 +160,7 @@ Output language: Turkish."""
                 return cities_str, ForecasterOutput.model_validate_json(response.text)
 
             results = {}
-            with concurrent.futures.ThreadPoolExecutor(max_workers=len(city_batches)) as executor:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
                 future_to_batch = {executor.submit(predict_batch, batch): batch for batch in city_batches}
                 for future in concurrent.futures.as_completed(future_to_batch):
                     batch = future_to_batch[future]
