@@ -39,6 +39,7 @@ class WatchdogASCRisk(BaseModel):
     ASC_CODE: str
     City: str
     Predicted_Total_Jobs: int
+    Incoming_Jobs: int
     Durum: str  # Kırmızı / Sarı / Yeşil
 
 class WatchdogDailyRisk(BaseModel):
@@ -249,6 +250,8 @@ class WatchdogAgent:
                     cap_info = capacity_map.get(code, {'City': city, 'Daily_Capacity': 20.0})
                     daily_cap = cap_info['Daily_Capacity']
                     
+                    inc_jobs = int(round(float(item.get('Incoming_Jobs', 0.0))))
+                    
                     if pred_jobs > daily_cap:
                         durum = 'Kırmızı'
                     elif pred_jobs >= 0.75 * daily_cap:
@@ -260,6 +263,7 @@ class WatchdogAgent:
                         ASC_CODE=code,
                         City=city,
                         Predicted_Total_Jobs=pred_jobs,
+                        Incoming_Jobs=inc_jobs,
                         Durum=durum
                     ))
                     
@@ -272,6 +276,9 @@ class WatchdogAgent:
                         city_jobs = [item.Predicted_Total_Jobs for item in risk_map if item.City == info['City']]
                         city_avg = int(round(sum(city_jobs) / len(city_jobs) if city_jobs else daily_cap * 0.5))
                         
+                        city_inc = [item.Incoming_Jobs for item in risk_map if item.City == info['City']]
+                        city_avg_inc = int(round(sum(city_inc) / len(city_inc) if city_inc else 0))
+                        
                         if city_avg > daily_cap:
                             durum = 'Kırmızı'
                         elif city_avg >= 0.75 * daily_cap:
@@ -283,6 +290,7 @@ class WatchdogAgent:
                             ASC_CODE=code,
                             City=info['City'],
                             Predicted_Total_Jobs=city_avg,
+                            Incoming_Jobs=city_avg_inc,
                             Durum=durum
                         ))
                         

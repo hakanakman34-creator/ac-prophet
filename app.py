@@ -977,17 +977,18 @@ with tab4:
             
             try:
                 df_jobs = pd.read_excel('Jobsdata.xlsx')
-                if 'CREATION_DATE' in df_jobs.columns and 'NEW_ASSIGNED_JOBS' in df_jobs.columns and 'ASC_CODE' in df_jobs.columns:
-                    df_jobs['CREATION_DATE'] = pd.to_datetime(df_jobs['CREATION_DATE']).dt.strftime('%Y-%m-%d')
+                date_col = 'CREATION_DATE' if 'CREATION_DATE' in df_jobs.columns else ('POSTING_DATE' if 'POSTING_DATE' in df_jobs.columns else None)
+                if date_col and 'NEW_ASSIGNED_JOBS' in df_jobs.columns and 'ASC_CODE' in df_jobs.columns:
+                    df_jobs[date_col] = pd.to_datetime(df_jobs[date_col]).dt.strftime('%Y-%m-%d')
                     df_jobs['ASC_CODE'] = df_jobs['ASC_CODE'].astype(str).str.strip()
                     
-                    actual_jobs = df_jobs.groupby(['CREATION_DATE', 'ASC_CODE'])['NEW_ASSIGNED_JOBS'].sum().reset_index()
+                    actual_jobs = df_jobs.groupby([date_col, 'ASC_CODE'])['NEW_ASSIGNED_JOBS'].sum().reset_index()
                     
                     merged_df = pd.merge(
                         df_pred, 
                         actual_jobs, 
                         left_on=['target_date', 'ASC_CODE'], 
-                        right_on=['CREATION_DATE', 'ASC_CODE'], 
+                        right_on=[date_col, 'ASC_CODE'], 
                         how='inner'
                     )
                     
@@ -995,7 +996,11 @@ with tab4:
                         st.warning("Kayıtlı tahminlerin hedeflenen tarihleri için henüz Jobsdata.xlsx içerisinde gerçekleşen veri (NEW_ASSIGNED_JOBS) bulunamadı. Lütfen daha güncel bir Jobsdata.xlsx yükleyin veya hedeflenen tarihlerin gelmesini bekleyin.")
                         st.dataframe(df_pred, use_container_width=True)
                     else:
-                        merged_df['Error_Count'] = abs(merged_df['Predicted_Total_Jobs'] - merged_df['NEW_ASSIGNED_JOBS'])
+                        if 'Incoming_Jobs' not in merged_df.columns:
+                            merged_df['Incoming_Jobs'] = 0
+                            st.warning("Mevcut tahmin geçmişinde 'Incoming_Jobs' (Yeni Gelecek İş) verisi bulunmuyor. Lütfen Operations Dashboard üzerinden yeni bir tahmin çalıştırarak verileri güncelleyin.")
+                            
+                        merged_df['Error_Count'] = abs(merged_df['Incoming_Jobs'] - merged_df['NEW_ASSIGNED_JOBS'])
                         
                         st.subheader("Filtreler")
                         col1, col2 = st.columns(2)
@@ -1012,28 +1017,28 @@ with tab4:
                         if selected_asc != "Tümü":
                             filtered_df = filtered_df[filtered_df['ASC_CODE'] == selected_asc]
                             
-                        st.dataframe(filtered_df[['target_date', 'ASC_CODE', 'Predicted_Total_Jobs', 'NEW_ASSIGNED_JOBS', 'Error_Count', 'prediction_timestamp']], use_container_width=True)
+                        st.dataframe(filtered_df[['target_date', 'ASC_CODE', 'Predicted_Total_Jobs', 'Incoming_Jobs', 'NEW_ASSIGNED_JOBS', 'Error_Count', 'prediction_timestamp']], use_container_width=True)
                         
                         if not filtered_df.empty:
                             mae = filtered_df['Error_Count'].mean()
-                            total_pred = filtered_df['Predicted_Total_Jobs'].sum()
+                            total_pred = filtered_df['Incoming_Jobs'].sum()
                             total_actual = filtered_df['NEW_ASSIGNED_JOBS'].sum()
                             
                             mc1, mc2 = st.columns(2)
                             mc1.metric("Ortalama Hata (MAE - İş Adedi)", f"{mae:.1f}")
-                            mc2.metric("Toplam Tahmin Edilen vs Gerçekleşen", f"{total_pred} / {total_actual}")
+                            mc2.metric("Toplam Tahmin Edilen (Yeni İş) vs Gerçekleşen", f"{total_pred} / {total_actual}")
                             
                             fig = px.bar(
                                 filtered_df, 
                                 x='ASC_CODE', 
-                                y=['Predicted_Total_Jobs', 'NEW_ASSIGNED_JOBS'],
+                                y=['Incoming_Jobs', 'NEW_ASSIGNED_JOBS'],
                                 barmode='group',
-                                title="Servis Bazlı Tahmin vs Gerçekleşen Karşılaştırması",
+                                title="Servis Bazlı Günlük Yeni İş Tahmini vs Gerçekleşen Karşılaştırması",
                                 labels={'value': 'İş Adedi', 'variable': 'Metrik'}
                             )
                             st.plotly_chart(fig, use_container_width=True)
                 else:
-                    st.error("Jobsdata.xlsx dosyasında 'CREATION_DATE', 'NEW_ASSIGNED_JOBS' veya 'ASC_CODE' sütunları bulunamadı.")
+                    st.error("Jobsdata.xlsx dosyasında 'CREATION_DATE' veya 'POSTING_DATE', 'NEW_ASSIGNED_JOBS' veya 'ASC_CODE' sütunları bulunamadı.")
             except Exception as e:
                 st.error(f"Jobsdata.xlsx yüklenirken veya birleştirilirken hata oluştu: {e}")
                 
