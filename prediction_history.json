@@ -500,878 +500,1228 @@
         "Incoming_Jobs": 1
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
+        "prediction_timestamp": "2026-06-11 10:27:00",
         "target_date": "2026-06-11",
         "ASC_CODE": "7077736",
         "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
+        "Incoming_Jobs": 4
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
+        "prediction_timestamp": "2026-06-11 10:27:00",
         "target_date": "2026-06-11",
         "ASC_CODE": "2278099",
         "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 18
+        "Incoming_Jobs": 30
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
+        "prediction_timestamp": "2026-06-11 10:27:00",
         "target_date": "2026-06-11",
         "ASC_CODE": "4493936",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 3
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "5284531",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 3
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "7077738",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 2
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "6435172",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 6
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "5954007",
-        "Predicted_Total_Jobs": 77,
-        "Incoming_Jobs": 21
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "7081903",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 17
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "9366541",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 11
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "7381125",
-        "Predicted_Total_Jobs": 14,
-        "Incoming_Jobs": 20
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "2207663",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 11
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "7397528",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 23
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "5931712",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 18
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "7325488",
-        "Predicted_Total_Jobs": 18,
-        "Incoming_Jobs": 37
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "3368175",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 22
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "3864716",
-        "Predicted_Total_Jobs": 22,
-        "Incoming_Jobs": 29
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "3367403",
-        "Predicted_Total_Jobs": 0,
+        "Predicted_Total_Jobs": 15,
         "Incoming_Jobs": 9
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
+        "prediction_timestamp": "2026-06-11 10:27:00",
         "target_date": "2026-06-11",
-        "ASC_CODE": "7381124",
-        "Predicted_Total_Jobs": 69,
-        "Incoming_Jobs": 26
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "7079978",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 7
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "3367739",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 2
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "7072286",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "3367743",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "4214024",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 3
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "7357843",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 5
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-11",
-        "ASC_CODE": "7077448",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "7077736",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "2278099",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 20
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "4493936",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 3
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
         "ASC_CODE": "5284531",
-        "Predicted_Total_Jobs": 0,
+        "Predicted_Total_Jobs": 6,
         "Incoming_Jobs": 3
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
         "ASC_CODE": "7077738",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 2
+        "Predicted_Total_Jobs": 16,
+        "Incoming_Jobs": 8
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
         "ASC_CODE": "6435172",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 7
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "5954007",
-        "Predicted_Total_Jobs": 76,
-        "Incoming_Jobs": 23
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "7081903",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 18
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "9366541",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 12
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "7381125",
-        "Predicted_Total_Jobs": 3,
-        "Incoming_Jobs": 22
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "2207663",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 12
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "7397528",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 25
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "5931712",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 20
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "7325488",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 40
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "3368175",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 24
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "3864716",
-        "Predicted_Total_Jobs": 8,
-        "Incoming_Jobs": 31
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "3367403",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 9
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "7381124",
-        "Predicted_Total_Jobs": 73,
-        "Incoming_Jobs": 28
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "7079978",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 7
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "3367739",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 2
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "7072286",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "3367743",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "4214024",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 3
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "7357843",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 6
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-12",
-        "ASC_CODE": "7077448",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "7077736",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "2278099",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 17
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "4493936",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 3
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "5284531",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 2
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "7077738",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 2
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "6435172",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 6
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "5954007",
-        "Predicted_Total_Jobs": 72,
-        "Incoming_Jobs": 20
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "7081903",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 16
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "9366541",
         "Predicted_Total_Jobs": 0,
         "Incoming_Jobs": 10
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "7381125",
-        "Predicted_Total_Jobs": 0,
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "5954007",
+        "Predicted_Total_Jobs": 113,
+        "Incoming_Jobs": 37
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "7081903",
+        "Predicted_Total_Jobs": 42,
+        "Incoming_Jobs": 29
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "9366541",
+        "Predicted_Total_Jobs": 26,
         "Incoming_Jobs": 19
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "2207663",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 11
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "7381125",
+        "Predicted_Total_Jobs": 40,
+        "Incoming_Jobs": 32
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "2207663",
+        "Predicted_Total_Jobs": 31,
+        "Incoming_Jobs": 35
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
         "ASC_CODE": "7397528",
         "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 22
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "5931712",
+        "Predicted_Total_Jobs": 14,
+        "Incoming_Jobs": 35
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "7325488",
+        "Predicted_Total_Jobs": 88,
+        "Incoming_Jobs": 79
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "3368175",
+        "Predicted_Total_Jobs": 34,
+        "Incoming_Jobs": 45
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "3864716",
+        "Predicted_Total_Jobs": 125,
+        "Incoming_Jobs": 69
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "3367403",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "7381124",
+        "Predicted_Total_Jobs": 77,
+        "Incoming_Jobs": 44
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "7079978",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "3367739",
+        "Predicted_Total_Jobs": 7,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "7072286",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "3367743",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 1
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "4214024",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 2
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "7357843",
+        "Predicted_Total_Jobs": 40,
+        "Incoming_Jobs": 20
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-11",
+        "ASC_CODE": "7077448",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "7077736",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 4
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "2278099",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 30
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "4493936",
+        "Predicted_Total_Jobs": 12,
+        "Incoming_Jobs": 9
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "5284531",
+        "Predicted_Total_Jobs": 3,
+        "Incoming_Jobs": 3
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "7077738",
+        "Predicted_Total_Jobs": 18,
+        "Incoming_Jobs": 8
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "6435172",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 10
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "5954007",
+        "Predicted_Total_Jobs": 126,
+        "Incoming_Jobs": 37
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "7081903",
+        "Predicted_Total_Jobs": 29,
+        "Incoming_Jobs": 29
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "9366541",
+        "Predicted_Total_Jobs": 12,
+        "Incoming_Jobs": 19
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "7381125",
+        "Predicted_Total_Jobs": 39,
+        "Incoming_Jobs": 32
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "2207663",
+        "Predicted_Total_Jobs": 42,
+        "Incoming_Jobs": 35
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "7397528",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 22
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "5931712",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 35
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "7325488",
+        "Predicted_Total_Jobs": 107,
+        "Incoming_Jobs": 79
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "3368175",
+        "Predicted_Total_Jobs": 34,
+        "Incoming_Jobs": 45
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "3864716",
+        "Predicted_Total_Jobs": 149,
+        "Incoming_Jobs": 69
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "3367403",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "7381124",
+        "Predicted_Total_Jobs": 97,
+        "Incoming_Jobs": 44
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "7079978",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "3367739",
+        "Predicted_Total_Jobs": 6,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "7072286",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "3367743",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 1
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "4214024",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 2
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "7357843",
+        "Predicted_Total_Jobs": 33,
+        "Incoming_Jobs": 20
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-12",
+        "ASC_CODE": "7077448",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "7077736",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 4
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "2278099",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 27
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "4493936",
+        "Predicted_Total_Jobs": 8,
+        "Incoming_Jobs": 8
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "5284531",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 3
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "7077738",
+        "Predicted_Total_Jobs": 19,
+        "Incoming_Jobs": 7
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "6435172",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 9
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "5954007",
+        "Predicted_Total_Jobs": 135,
+        "Incoming_Jobs": 33
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "7081903",
+        "Predicted_Total_Jobs": 13,
+        "Incoming_Jobs": 26
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "9366541",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 17
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "7381125",
+        "Predicted_Total_Jobs": 33,
+        "Incoming_Jobs": 23
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "2207663",
+        "Predicted_Total_Jobs": 45,
         "Incoming_Jobs": 24
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "7397528",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 16
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
         "target_date": "2026-06-13",
         "ASC_CODE": "5931712",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 25
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "7325488",
+        "Predicted_Total_Jobs": 110,
+        "Incoming_Jobs": 56
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "3368175",
+        "Predicted_Total_Jobs": 26,
+        "Incoming_Jobs": 32
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "3864716",
+        "Predicted_Total_Jobs": 158,
+        "Incoming_Jobs": 49
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "3367403",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 3
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "7381124",
+        "Predicted_Total_Jobs": 107,
+        "Incoming_Jobs": 31
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "7079978",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 4
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "3367739",
+        "Predicted_Total_Jobs": 5,
+        "Incoming_Jobs": 4
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "7072286",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "3367743",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 1
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "4214024",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 1
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "7357843",
+        "Predicted_Total_Jobs": 23,
+        "Incoming_Jobs": 14
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-13",
+        "ASC_CODE": "7077448",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "7077736",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 1
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "2278099",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "4493936",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 2
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "5284531",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 1
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "7077738",
+        "Predicted_Total_Jobs": 14,
+        "Incoming_Jobs": 1
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "6435172",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 2
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "5954007",
+        "Predicted_Total_Jobs": 117,
+        "Incoming_Jobs": 6
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "7081903",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "9366541",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 3
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "7381125",
+        "Predicted_Total_Jobs": 33,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "2207663",
+        "Predicted_Total_Jobs": 46,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "7397528",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "5931712",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 4
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "7325488",
+        "Predicted_Total_Jobs": 110,
+        "Incoming_Jobs": 9
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "3368175",
+        "Predicted_Total_Jobs": 27,
+        "Incoming_Jobs": 8
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "3864716",
+        "Predicted_Total_Jobs": 161,
+        "Incoming_Jobs": 10
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "3367403",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 1
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "7381124",
+        "Predicted_Total_Jobs": 108,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "7079978",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 1
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "3367739",
+        "Predicted_Total_Jobs": 5,
+        "Incoming_Jobs": 1
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "7072286",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "3367743",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "4214024",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "7357843",
+        "Predicted_Total_Jobs": 22,
+        "Incoming_Jobs": 3
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-14",
+        "ASC_CODE": "7077448",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "7077736",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 4
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "2278099",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 30
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "4493936",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 9
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "5284531",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 3
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "5954007",
+        "Predicted_Total_Jobs": 130,
+        "Incoming_Jobs": 37
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "6435172",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 10
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "7077738",
+        "Predicted_Total_Jobs": 16,
+        "Incoming_Jobs": 8
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "7081903",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 29
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "9366541",
         "Predicted_Total_Jobs": 0,
         "Incoming_Jobs": 19
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "2207663",
+        "Predicted_Total_Jobs": 56,
+        "Incoming_Jobs": 34
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "3367403",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "3367739",
+        "Predicted_Total_Jobs": 4,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "3367743",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 1
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "3368175",
+        "Predicted_Total_Jobs": 26,
+        "Incoming_Jobs": 44
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "3864716",
+        "Predicted_Total_Jobs": 184,
+        "Incoming_Jobs": 68
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "4214024",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 2
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "5931712",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 34
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "7072286",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "7077448",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "7079978",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
         "ASC_CODE": "7325488",
+        "Predicted_Total_Jobs": 127,
+        "Incoming_Jobs": 77
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "7357843",
+        "Predicted_Total_Jobs": 14,
+        "Incoming_Jobs": 19
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "7381124",
+        "Predicted_Total_Jobs": 127,
+        "Incoming_Jobs": 43
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "7381125",
+        "Predicted_Total_Jobs": 31,
+        "Incoming_Jobs": 31
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-15",
+        "ASC_CODE": "7397528",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 21
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "7077736",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 4
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "2278099",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 30
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "4493936",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 9
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "5284531",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 3
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "5954007",
+        "Predicted_Total_Jobs": 143,
+        "Incoming_Jobs": 37
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "6435172",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 10
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "7077738",
+        "Predicted_Total_Jobs": 18,
+        "Incoming_Jobs": 8
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "7081903",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 29
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "9366541",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 19
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "7381125",
+        "Predicted_Total_Jobs": 29,
+        "Incoming_Jobs": 31
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "2207663",
+        "Predicted_Total_Jobs": 66,
+        "Incoming_Jobs": 34
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "7397528",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 21
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "5931712",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 34
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "7325488",
+        "Predicted_Total_Jobs": 144,
+        "Incoming_Jobs": 77
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "3368175",
+        "Predicted_Total_Jobs": 25,
+        "Incoming_Jobs": 44
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "3864716",
+        "Predicted_Total_Jobs": 207,
+        "Incoming_Jobs": 68
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "3367403",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "7381124",
+        "Predicted_Total_Jobs": 146,
+        "Incoming_Jobs": 43
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "7079978",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "3367739",
+        "Predicted_Total_Jobs": 3,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "7072286",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "3367743",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 1
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "4214024",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 2
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "7357843",
+        "Predicted_Total_Jobs": 9,
+        "Incoming_Jobs": 22
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-16",
+        "ASC_CODE": "7077448",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "7077736",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "2278099",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 30
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "4493936",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 9
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "5284531",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 3
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "5954007",
+        "Predicted_Total_Jobs": 156,
+        "Incoming_Jobs": 37
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "6435172",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 10
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "7077738",
+        "Predicted_Total_Jobs": 20,
+        "Incoming_Jobs": 8
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "7081903",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 29
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "9366541",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 19
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "7381125",
+        "Predicted_Total_Jobs": 29,
+        "Incoming_Jobs": 33
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "2207663",
+        "Predicted_Total_Jobs": 78,
+        "Incoming_Jobs": 36
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "7397528",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 22
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "5931712",
         "Predicted_Total_Jobs": 0,
         "Incoming_Jobs": 36
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "7325488",
+        "Predicted_Total_Jobs": 164,
+        "Incoming_Jobs": 80
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
         "ASC_CODE": "3368175",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 22
+        "Predicted_Total_Jobs": 26,
+        "Incoming_Jobs": 46
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
         "ASC_CODE": "3864716",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 29
+        "Predicted_Total_Jobs": 233,
+        "Incoming_Jobs": 71
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
         "ASC_CODE": "3367403",
         "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 8
+        "Incoming_Jobs": 5
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
         "ASC_CODE": "7381124",
-        "Predicted_Total_Jobs": 74,
+        "Predicted_Total_Jobs": 167,
+        "Incoming_Jobs": 45
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "7079978",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "3367739",
+        "Predicted_Total_Jobs": 2,
+        "Incoming_Jobs": 5
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "7072286",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 0
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "3367743",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 1
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "4214024",
+        "Predicted_Total_Jobs": 0,
+        "Incoming_Jobs": 2
+    },
+    {
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
+        "ASC_CODE": "7357843",
+        "Predicted_Total_Jobs": 7,
         "Incoming_Jobs": 25
     },
     {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "7079978",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 6
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "3367739",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 2
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "7072286",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "3367743",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "4214024",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 2
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "7357843",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 5
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-13",
-        "ASC_CODE": "7077448",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "7077736",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 0
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "2278099",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 4
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "4493936",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "5284531",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 0
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "7077738",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 0
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "6435172",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "5954007",
-        "Predicted_Total_Jobs": 52,
-        "Incoming_Jobs": 4
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "7081903",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 3
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "9366541",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 2
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "7381125",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 3
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "2207663",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 2
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "7397528",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 4
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "5931712",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 3
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "7325488",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 6
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "3368175",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 4
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "3864716",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 5
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "3367403",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "7381124",
-        "Predicted_Total_Jobs": 54,
-        "Incoming_Jobs": 4
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "7079978",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "3367739",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 0
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "7072286",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 0
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "3367743",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 0
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "4214024",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
-        "ASC_CODE": "7357843",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-14",
+        "prediction_timestamp": "2026-06-11 10:27:00",
+        "target_date": "2026-06-17",
         "ASC_CODE": "7077448",
         "Predicted_Total_Jobs": 0,
         "Incoming_Jobs": 0
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "7077736",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 0
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "2278099",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 16
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "4493936",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 3
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "5284531",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 2
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "5954007",
-        "Predicted_Total_Jobs": 46,
-        "Incoming_Jobs": 18
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "6435172",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 6
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "7077738",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 2
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "7081903",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 14
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "9366541",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 10
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "2207663",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 7
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "3367403",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 5
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "3367739",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "3367743",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "3368175",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 16
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "3864716",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 17
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "4214024",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 2
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "5931712",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 11
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "7072286",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "7077448",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 1
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "7079978",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 4
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "7325488",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 24
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "7357843",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 4
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "7381124",
-        "Predicted_Total_Jobs": 45,
-        "Incoming_Jobs": 15
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "7381125",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 13
-    },
-    {
-        "prediction_timestamp": "2026-06-09 15:40:53",
-        "target_date": "2026-06-15",
-        "ASC_CODE": "7397528",
-        "Predicted_Total_Jobs": 0,
-        "Incoming_Jobs": 14
     }
 ]

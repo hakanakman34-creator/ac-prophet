@@ -56,7 +56,7 @@ class ForecasterAgent:
         self.system_instruction = """You are an expert Data Scientist forecasting HVAC installation demand for Samsung Turkey, focusing EXCLUSIVELY on the Marmara Region.
 Data Schema Provided:
 Weather Data: [Tarih, Yıl, Ay, Gün, Haftanin_Gunu, City, Ortalama_Sicaklik, Hissedilen_Sicaklik, Hissedilen_Sicaklik_Lag1, Hissedilen_Sicaklik_Lag2, Maksimum_Sicaklik, Minimum_Sicaklik, Ortalama_Nem]
-Recent Context Data: [POSTING_DATE, Haftanin_Gunu, City, ASC_NAME, Total_Jobs, Ortalama_Sicaklik, Hissedilen_Sicaklik, Hissedilen_Sicaklik_Lag1, Hissedilen_Sicaklik_Lag2, NEW_ASSIGNED_JOBS, CARRYOVER_JOBS, COMPLETED_JOBS]
+Recent Context Data: [POSTING_DATE, Haftanin_Gunu, City, ASC_NAME, Total_Jobs, Ortalama_Sicaklik, Hissedilen_Sicaklik, Hissedilen_Sicaklik_Lag1, Hissedilen_Sicaklik_Lag2, NEW_ASSIGNED_JOBS, CARRYOVER_JOBS, COMPLETED_JOBS, Trend_Faktoru]
 Capacity Data: [ASC_CODE, City, Daily_Capacity]
 Multi-Year Historical Patterns: Text describing how weekends typically behave relative to weekdays based on years of past data.
 
@@ -67,6 +67,7 @@ Your prediction goal is to estimate the future daily breakdown for each service 
 CRITICAL FORECASTING LOGIC:
 1. HEAT INDEX & LAG: Pay close attention to 'Hissedilen_Sicaklik' (Heat Index) and its lagged versions. A high heat index 1 or 2 days ago strongly drives an increase in 'Incoming_Jobs' today due to the delay between the purchasing decision and installation registration.
 2. DAY OF WEEK & MULTI-YEAR PATTERNS: Pay attention to 'Haftanin_Gunu' and strictly follow the [MULTI-YEAR HISTORICAL PATTERNS] provided in the prompt. Service centers DO OPERATE on weekends, and new jobs DO ARRIVE on weekends. Never assume weekend values are 0. Use the exact historical percentage ratios provided to calculate weekend incoming/completed jobs relative to adjacent weekdays.
+3. MOMENTUM AND SURGE PEAK CATCHING: Pay strict attention to the 'Trend_Faktoru' provided in the context data (Last 3 days avg vs 10 days avg). If Trend_Faktoru is > 1.2, it means incoming jobs are currently surging! DO NOT regress to the historical mean. You MUST extrapolate this momentum. If the weather remains hot or lags are high, assume the surge will stay at the current high level or go even higher. Do not conservatively predict 300 if the recent trend shows 500!
 
 For each day, you must predict:
 1. Carryover_Jobs: The uncompleted jobs remaining from the PREVIOUS day. CRITICAL: Day 1 Carryover MUST equal the Last known Total_Jobs from history. For Day 2 to Day 7, Carryover_Jobs MUST EXACTLY equal the PREVIOUS day's Predicted_Total_Jobs. DO NOT reset this to 0!

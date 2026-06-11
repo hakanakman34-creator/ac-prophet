@@ -625,7 +625,7 @@ with tab1:
             forecast_df = pd.merge(forecast_df, combined_w[['Tarih', 'City', 'Hissedilen_Sicaklik_Lag1', 'Hissedilen_Sicaklik_Lag2']], on=['Tarih', 'City'], how='left')
             forecast_json_payload = forecast_df.to_json(orient='records', force_ascii=False)
             
-            recent_days = sorted(df['POSTING_DATE'].unique())[-7:]
+            recent_days = sorted(df['POSTING_DATE'].unique())[-10:]
             recent_data = df[df['POSTING_DATE'].isin(recent_days)].copy()
             
             # Ensure the required columns exist, fill with 0 if they don't
@@ -633,9 +633,23 @@ with tab1:
                 if col not in recent_data.columns:
                     recent_data[col] = 0
                     
+            # Calculate Trend_Faktoru per ASC_CODE (Last 3 days avg vs 10 days avg)
+            last_3_days = recent_days[-3:] if len(recent_days) >= 3 else recent_days
+            
+            def calc_trend(group):
+                recent_avg = group[group['POSTING_DATE'].isin(last_3_days)]['NEW_ASSIGNED_JOBS'].mean()
+                overall_avg = group['NEW_ASSIGNED_JOBS'].mean()
+                if pd.isna(recent_avg) or pd.isna(overall_avg) or overall_avg == 0:
+                    return 1.0
+                return round(recent_avg / overall_avg, 2)
+                
+            trend_map = recent_data.groupby('ASC_CODE').apply(calc_trend).reset_index(name='Trend_Faktoru')
+            recent_data = pd.merge(recent_data, trend_map, on='ASC_CODE', how='left')
+            recent_data['Trend_Faktoru'] = recent_data['Trend_Faktoru'].fillna(1.0)
+                    
             cols_to_keep = ['POSTING_DATE', 'Haftanin_Gunu', 'City', 'ASC_CODE', 'ASC_NAME', 'Total_Jobs', 
                             'Ortalama_Sicaklik', 'Hissedilen_Sicaklik', 'Hissedilen_Sicaklik_Lag1', 'Hissedilen_Sicaklik_Lag2',
-                            'NEW_ASSIGNED_JOBS', 'CARRYOVER_JOBS', 'COMPLETED_JOBS']
+                            'NEW_ASSIGNED_JOBS', 'CARRYOVER_JOBS', 'COMPLETED_JOBS', 'Trend_Faktoru']
             
             # Gracefully handle missing columns in case of old data
             for c in cols_to_keep:
@@ -1024,18 +1038,28 @@ with tab4:
                             total_pred = filtered_df['Incoming_Jobs'].sum()
                             total_actual = filtered_df['NEW_ASSIGNED_JOBS'].sum()
                             
-                            mc1, mc2 = st.columns(2)
+                            mc1, mc2, mc3 = st.columns(3)
                             mc1.metric("Ortalama Hata (MAE - İş Adedi)", f"{mae:.1f}")
-                            mc2.metric("Toplam Tahmin Edilen (Yeni İş) vs Gerçekleşen", f"{total_pred} / {total_actual}")
                             
+                            accuracy = 0
+                            if total_actual > 0:
+                                accuracy = max(0, 100 - (abs(total_pred - total_actual) / total_actual * 100))
+                            elif total_pred == 0:
+                                accuracy = 100
+                            mc2.metric("Tahmin Doğruluğu (%)", f"%{accuracy:.1f}")
+                            
+                            mc3.metric("Tahmin Edilen vs Gerçekleşen Toplam", f"{total_pred} / {total_actual}")
+                            
+                            plot_df = filtered_df.sort_values('NEW_ASSIGNED_JOBS', ascending=False)
                             fig = px.bar(
-                                filtered_df, 
+                                plot_df, 
                                 x='ASC_CODE', 
                                 y=['Incoming_Jobs', 'NEW_ASSIGNED_JOBS'],
                                 barmode='group',
-                                title="Servis Bazlı Günlük Yeni İş Tahmini vs Gerçekleşen Karşılaştırması",
+                                title="Servis Bazlı Günlük Yeni İş Tahmini vs Gerçekleşen Karşılaştırması (Gerçekleşene Göre Sıralı)",
                                 labels={'value': 'İş Adedi', 'variable': 'Metrik'}
                             )
+                            fig.update_xaxes(type='category', tickangle=45)
                             st.plotly_chart(fig, use_container_width=True)
                 else:
                     st.error("Jobsdata.xlsx dosyasında 'CREATION_DATE' veya 'POSTING_DATE', 'NEW_ASSIGNED_JOBS' veya 'ASC_CODE' sütunları bulunamadı.")
