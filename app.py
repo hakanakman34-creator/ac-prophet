@@ -1061,6 +1061,24 @@ with tab4:
                             )
                             fig.update_xaxes(type='category', tickangle=45)
                             st.plotly_chart(fig, use_container_width=True)
+                            
+                            if 'ASC_NAME' in df_jobs.columns:
+                                st.markdown("---")
+                                st.subheader("📋 Servis Kodları ve İsimleri Eşleşme Tablosu")
+                                
+                                mapping_df = df_jobs[['ASC_CODE', 'ASC_NAME']].drop_duplicates().copy()
+                                mapping_df['ASC_CODE'] = mapping_df['ASC_CODE'].astype(str).str.strip()
+                                mapping_df['ASC_NAME'] = mapping_df['ASC_NAME'].astype(str).str.strip()
+                                
+                                active_asc_codes = filtered_df['ASC_CODE'].unique()
+                                filtered_mapping = mapping_df[mapping_df['ASC_CODE'].isin(active_asc_codes)].copy()
+                                
+                                filtered_mapping = filtered_mapping.rename(columns={
+                                    'ASC_CODE': 'Servis Kodu (ASC_CODE)',
+                                    'ASC_NAME': 'Servis Adı (ASC_NAME)'
+                                }).sort_values('Servis Kodu (ASC_CODE)')
+                                
+                                st.dataframe(filtered_mapping, use_container_width=True, hide_index=True)
                 else:
                     st.error("Jobsdata.xlsx dosyasında 'CREATION_DATE' veya 'POSTING_DATE', 'NEW_ASSIGNED_JOBS' veya 'ASC_CODE' sütunları bulunamadı.")
             except Exception as e:
