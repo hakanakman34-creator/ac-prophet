@@ -135,6 +135,7 @@ def fetch_services_data_v2():
 
 @st.cache_data(ttl=3600)
 def fetch_cached_weather(cities_tuple):
+    # Fetches and caches weather data for the given cities
     return fetch_future_weather(list(cities_tuple))
 
 try:
@@ -533,7 +534,8 @@ with tab1:
     st.subheader("🌦️ 7-Day Marmara Weather Forecast")
     
     try:
-        cities_list = services_df['City'].dropna().unique().tolist()
+        all_services_df = fetch_services_data_v2()
+        cities_list = all_services_df['City'].dropna().unique().tolist()
         # Ensure Bilecik is included in the weather forecast list
         has_bilecik = any(str(c).upper() in ["BİLECİK", "BILECIK"] for c in cities_list)
         if not has_bilecik:
@@ -1015,6 +1017,9 @@ with tab4:
                             st.warning("Mevcut tahmin geçmişinde 'Incoming_Jobs' (Yeni Gelecek İş) verisi bulunmuyor. Lütfen Operations Dashboard üzerinden yeni bir tahmin çalıştırarak verileri güncelleyin.")
                             
                         merged_df['Error_Count'] = abs(merged_df['Incoming_Jobs'] - merged_df['NEW_ASSIGNED_JOBS'])
+                        merged_df['Mutlak_Dogruluk_%'] = merged_df.apply(
+                            lambda row: max(0, 100 - (row['Error_Count'] / row['NEW_ASSIGNED_JOBS'] * 100)) if row['NEW_ASSIGNED_JOBS'] > 0 else (100 if row['Incoming_Jobs'] == 0 else 0), axis=1
+                        ).round(1)
                         
                         st.subheader("Filtreler")
                         col1, col2 = st.columns(2)
@@ -1031,14 +1036,16 @@ with tab4:
                         if selected_asc != "Tümü":
                             filtered_df = filtered_df[filtered_df['ASC_CODE'] == selected_asc]
                             
-                        st.dataframe(filtered_df[['target_date', 'ASC_CODE', 'Predicted_Total_Jobs', 'Incoming_Jobs', 'NEW_ASSIGNED_JOBS', 'Error_Count', 'prediction_timestamp']], use_container_width=True)
+                        st.dataframe(filtered_df[['target_date', 'ASC_CODE', 'Predicted_Total_Jobs', 'Incoming_Jobs', 'NEW_ASSIGNED_JOBS', 'Error_Count', 'Mutlak_Dogruluk_%', 'prediction_timestamp']], use_container_width=True)
                         
                         if not filtered_df.empty:
                             mae = filtered_df['Error_Count'].mean()
                             total_pred = filtered_df['Incoming_Jobs'].sum()
                             total_actual = filtered_df['NEW_ASSIGNED_JOBS'].sum()
                             
-                            mc1, mc2, mc3 = st.columns(3)
+                            total_absolute_error = filtered_df['Error_Count'].sum()
+                            
+                            mc1, mc2, mc3, mc4 = st.columns(4)
                             mc1.metric("Ortalama Hata (MAE - İş Adedi)", f"{mae:.1f}")
                             
                             accuracy = 0
@@ -1046,9 +1053,16 @@ with tab4:
                                 accuracy = max(0, 100 - (abs(total_pred - total_actual) / total_actual * 100))
                             elif total_pred == 0:
                                 accuracy = 100
-                            mc2.metric("Tahmin Doğruluğu (%)", f"%{accuracy:.1f}")
+                            mc2.metric("Genel Hacim Doğruluğu (%)", f"%{accuracy:.1f}")
                             
-                            mc3.metric("Tahmin Edilen vs Gerçekleşen Toplam", f"{total_pred} / {total_actual}")
+                            wmape_accuracy = 0
+                            if total_actual > 0:
+                                wmape_accuracy = max(0, 100 - (total_absolute_error / total_actual * 100))
+                            elif total_pred == 0:
+                                wmape_accuracy = 100
+                            mc3.metric("Mutlak Tahmin Doğruluğu (%)", f"%{wmape_accuracy:.1f}")
+                            
+                            mc4.metric("Tahmin Edilen vs Gerçekleşen Toplam", f"{total_pred} / {total_actual}")
                             
                             plot_df = filtered_df.sort_values('NEW_ASSIGNED_JOBS', ascending=False)
                             fig = px.bar(
