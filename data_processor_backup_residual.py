@@ -208,7 +208,7 @@ def fetch_future_weather(cities: list) -> pd.DataFrame:
                     })
             else:
                 # Open-Meteo logic
-                url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&past_days=14&daily=temperature_2m_max,temperature_2m_min,relative_humidity_2m_max&timezone=auto"
+                url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&daily=temperature_2m_max,temperature_2m_min,relative_humidity_2m_max&timezone=auto"
                 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
                 res = requests.get(url, headers=headers, timeout=15)
                 if res.status_code != 200:

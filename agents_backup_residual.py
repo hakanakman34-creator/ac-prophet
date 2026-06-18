@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 # Try to initialize the Gemini client
 try:
-    client = genai.Client(http_options=types.HttpOptions(timeout=120000))
+    client = genai.Client(http_options=types.HttpOptions(timeout=300000))
 except Exception as e:
     logger.warning("Could not initialize Gemini Client. Make sure GEMINI_API_KEY is set in .env")
     client = None
@@ -23,7 +23,7 @@ class ASCForecast(BaseModel):
     ASC_CODE: str
     City: str
     Carryover_Jobs: int
-    Predicted_Jobs: int
+    Incoming_Jobs: int
     Completed_Jobs: int
     Predicted_Total_Jobs: int
 
@@ -39,7 +39,7 @@ class WatchdogASCRisk(BaseModel):
     ASC_CODE: str
     City: str
     Predicted_Total_Jobs: int
-    Predicted_Jobs: int
+    Incoming_Jobs: int
     Durum: str  # Kırmızı / Sarı / Yeşil
 
 class WatchdogDailyRisk(BaseModel):
@@ -65,15 +65,15 @@ The 'Total_Jobs' column in the recent historical data represents the ACTIVE_BACK
 Your prediction goal is to estimate the future daily breakdown for each service center over the next 7 days, based on their recent backlog trends, the upcoming weather forecast, their daily completion capacity, and the multi-year historical patterns.
 
 CRITICAL FORECASTING LOGIC:
-1. HEAT INDEX & LAG: Pay close attention to 'Hissedilen_Sicaklik' (Heat Index) and its lagged versions. A high heat index 1 or 2 days ago strongly drives an increase in 'Predicted_Jobs' today due to the delay between the purchasing decision and installation registration.
+1. HEAT INDEX & LAG: Pay close attention to 'Hissedilen_Sicaklik' (Heat Index) and its lagged versions. A high heat index 1 or 2 days ago strongly drives an increase in 'Incoming_Jobs' today due to the delay between the purchasing decision and installation registration.
 2. DAY OF WEEK & MULTI-YEAR PATTERNS: Pay attention to 'Haftanin_Gunu' and strictly follow the [MULTI-YEAR HISTORICAL PATTERNS] provided in the prompt. Service centers DO OPERATE on weekends, and new jobs DO ARRIVE on weekends. Never assume weekend values are 0. Use the exact historical percentage ratios provided to calculate weekend incoming/completed jobs relative to adjacent weekdays.
 3. MOMENTUM AND SURGE PEAK CATCHING: Pay strict attention to the 'Trend_Faktoru' provided in the context data (Last 3 days avg vs 10 days avg). If Trend_Faktoru is > 1.2, it means incoming jobs are currently surging! DO NOT regress to the historical mean. For weekdays, you MUST extrapolate this momentum. HOWEVER, for weekends (Saturday/Sunday), you MUST still apply the strict historical weekend drop ratios to the surged baseline. Do not predict weekday-level volumes for weekends, even during a surge!
 
 For each day, you must predict:
 1. Carryover_Jobs: The uncompleted jobs remaining from the PREVIOUS day. CRITICAL: Day 1 Carryover MUST equal the Last known Total_Jobs from history. For Day 2 to Day 7, Carryover_Jobs MUST EXACTLY equal the PREVIOUS day's Predicted_Total_Jobs. DO NOT reset this to 0!
-2. Predicted_Jobs: New jobs expected to arrive on that day (expect a spike if the weather is getting hotter, especially considering Lag1 and Lag2).
-3. Completed_Jobs: Jobs that will be closed that day. This should generally be min(Carryover_Jobs + Predicted_Jobs, Daily_Capacity).
-4. Predicted_Total_Jobs: The active backlog remaining at the end of the day. Must EXACTLY equal: (Carryover_Jobs + Predicted_Jobs - Completed_Jobs).
+2. Incoming_Jobs: New jobs expected to arrive on that day (expect a spike if the weather is getting hotter, especially considering Lag1 and Lag2).
+3. Completed_Jobs: Jobs that will be closed that day. This should generally be min(Carryover_Jobs + Incoming_Jobs, Daily_Capacity).
+4. Predicted_Total_Jobs: The active backlog remaining at the end of the day. Must EXACTLY equal: (Carryover_Jobs + Incoming_Jobs - Completed_Jobs).
 
 CRITICAL COMPLETENESS RULE:
 You MUST include EVERY SINGLE service center (ASC_CODE) that appears in the historical context in your output. Do NOT skip or omit any service centers, even if their historical backlog is low.
@@ -92,7 +92,7 @@ You MUST output a JSON object adhering exactly to the following structure:
           "ASC_CODE": "string containing service code",
           "City": "city name",
           "Carryover_Jobs": carryover jobs (float),
-          "Predicted_Jobs": incoming jobs (float),
+          "Incoming_Jobs": incoming jobs (float),
           "Completed_Jobs": completed jobs (float),
           "Predicted_Total_Jobs": predicted total backlog (float)
         },
@@ -104,7 +104,7 @@ You MUST output a JSON object adhering exactly to the following structure:
 }
 Output language: Turkish."""
 
-    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
+    @retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=1, min=2, max=10))
     def predict(self, historical_context: str, weather_forecast: str, capacity_data: str, multi_year_patterns: str) -> ForecasterOutput:
         if not client:
             raise ValueError("Gemini Client not initialized.")
@@ -124,7 +124,7 @@ Output language: Turkish."""
                 raise ValueError("City column missing in capacity data JSON.")
                 
             cities_list = list(capacity_df['City'].dropna().unique())
-            batch_size = 2
+            batch_size = 4
             city_batches = [cities_list[i:i + batch_size] for i in range(0, len(cities_list), batch_size)]
             
             logger.info(f"Splitting forecasting into {len(city_batches)} batches (max {batch_size} cities/batch) to optimize AI credits.")
@@ -162,16 +162,17 @@ Output language: Turkish."""
                 return cities_str, ForecasterOutput.model_validate_json(response.text)
 
             results = {}
-            import time
-            for batch in city_batches:
-                batch_str = ", ".join(batch)
-                try:
-                    batch_name, output = predict_batch(batch)
-                    results[batch_name] = output
-                    time.sleep(2)  # Avoid rate limits and timeouts
-                except Exception as exc:
-                    logger.error(f"Batch {batch_str} forecast failed: {exc}")
-                    raise exc
+            with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+                future_to_batch = {executor.submit(predict_batch, batch): batch for batch in city_batches}
+                for future in concurrent.futures.as_completed(future_to_batch):
+                    batch = future_to_batch[future]
+                    batch_str = ", ".join(batch)
+                    try:
+                        batch_name, output = future.result()
+                        results[batch_name] = output
+                    except Exception as exc:
+                        logger.error(f"Batch {batch_str} forecast failed: {exc}")
+                        raise exc
 
             # Merge results by day
             merged_days = {}
@@ -250,7 +251,7 @@ class WatchdogAgent:
                     cap_info = capacity_map.get(code, {'City': city, 'Daily_Capacity': 20.0})
                     daily_cap = cap_info['Daily_Capacity']
                     
-                    inc_jobs = int(round(float(item.get('Predicted_Jobs', 0.0))))
+                    inc_jobs = int(round(float(item.get('Incoming_Jobs', 0.0))))
                     
                     if pred_jobs > daily_cap:
                         durum = 'Kırmızı'
@@ -263,7 +264,7 @@ class WatchdogAgent:
                         ASC_CODE=code,
                         City=city,
                         Predicted_Total_Jobs=pred_jobs,
-                        Predicted_Jobs=inc_jobs,
+                        Incoming_Jobs=inc_jobs,
                         Durum=durum
                     ))
                     
@@ -276,7 +277,7 @@ class WatchdogAgent:
                         city_jobs = [item.Predicted_Total_Jobs for item in risk_map if item.City == info['City']]
                         city_avg = int(round(sum(city_jobs) / len(city_jobs) if city_jobs else daily_cap * 0.5))
                         
-                        city_inc = [item.Predicted_Jobs for item in risk_map if item.City == info['City']]
+                        city_inc = [item.Incoming_Jobs for item in risk_map if item.City == info['City']]
                         city_avg_inc = int(round(sum(city_inc) / len(city_inc) if city_inc else 0))
                         
                         if city_avg > daily_cap:
@@ -290,7 +291,7 @@ class WatchdogAgent:
                             ASC_CODE=code,
                             City=info['City'],
                             Predicted_Total_Jobs=city_avg,
-                            Predicted_Jobs=city_avg_inc,
+                            Incoming_Jobs=city_avg_inc,
                             Durum=durum
                         ))
                         

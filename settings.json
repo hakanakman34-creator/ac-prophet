@@ -1,4 +1,5 @@
 {
     "weather_source": "Open-Meteo",
-    "visual_crossing_api_key": "GEXY3EGSJQ4EL3VNTJQ3PDN92"
+    "visual_crossing_api_key": "GEXY3EGSJQ4EL3VNTJQ3PDN92",
+    "commander_threshold": 3.0
 }

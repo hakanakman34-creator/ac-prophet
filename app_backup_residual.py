@@ -632,10 +632,7 @@ with tab1:
             
             # Merge lags back into forecast_df
             forecast_df = pd.merge(forecast_df, combined_w[['Tarih', 'City', 'Hissedilen_Sicaklik_Lag1', 'Hissedilen_Sicaklik_Lag2']], on=['Tarih', 'City'], how='left')
-            # Filter the forecast sent to the AI to ONLY include future dates
-            max_hist_date = str(df['POSTING_DATE'].max())
-            future_forecast_df = forecast_df[forecast_df['Tarih'].astype(str) > max_hist_date].copy()
-            forecast_json_payload = future_forecast_df.to_json(orient='records', force_ascii=False)
+            forecast_json_payload = forecast_df.to_json(orient='records', force_ascii=False)
             
             recent_days = sorted(df['POSTING_DATE'].unique())[-10:]
             recent_data = df[df['POSTING_DATE'].isin(recent_days)].copy()
@@ -673,23 +670,11 @@ with tab1:
                              'NEW_ASSIGNED_JOBS', 'CARRYOVER_JOBS', 'COMPLETED_JOBS']
             recent_data = recent_data[cols_to_keep].dropna(subset=critical_cols).copy()
             
-            # Instead of hardcoded 25.0, map the actual weather from forecast_df (which now includes past_days=14)
+            # Fill missing weather data with reasonable default values (e.g., 25 degrees) to prevent empty prompt
             weather_cols = ['Ortalama_Sicaklik', 'Hissedilen_Sicaklik', 'Hissedilen_Sicaklik_Lag1', 'Hissedilen_Sicaklik_Lag2']
-            existing_w_cols = [c for c in weather_cols if c in recent_data.columns]
-            cols_to_drop = existing_w_cols + (['Tarih'] if 'Tarih' in recent_data.columns else [])
-            recent_data = recent_data.drop(columns=cols_to_drop)
-            
-            f_df = forecast_df[['Tarih', 'City'] + weather_cols].copy()
-            f_df['Tarih'] = pd.to_datetime(f_df['Tarih']).dt.date
-            recent_data['POSTING_DATE_date'] = pd.to_datetime(recent_data['POSTING_DATE']).dt.date
-            
-            recent_data = pd.merge(recent_data, f_df, left_on=['POSTING_DATE_date', 'City'], right_on=['Tarih', 'City'], how='left')
-            recent_data = recent_data.drop(columns=['Tarih', 'POSTING_DATE_date'])
-            
-            # For any remaining missing data, ffill/bfill per city, then fallback to 25.0 if API completely failed
             for wc in weather_cols:
                 if wc in recent_data.columns:
-                    recent_data[wc] = recent_data.groupby('City')[wc].ffill().bfill().fillna(25.0)
+                    recent_data[wc] = recent_data[wc].fillna(25.0)
                     
             historical_context_json_payload = recent_data.to_json(orient='records', force_ascii=False)
             
@@ -729,7 +714,7 @@ with tab1:
                             'Tarih': daily.day,
                             'Servis Adı': asc_lookup.get(clean_code(item.ASC_CODE), f"Servis {item.ASC_CODE}"),
                             'Carryover İş Adedi': item.Carryover_Jobs,
-                            'Gelmesi Beklenen İş Adedi': item.Predicted_Jobs,
+                            'Gelmesi Beklenen İş Adedi': item.Incoming_Jobs,
                             'Kapatılması Beklenen İş Adedi': item.Completed_Jobs,
                             "Backlog'a Düşecek İş Adedi": item.Predicted_Total_Jobs
                         })
@@ -1041,13 +1026,13 @@ with tab4:
                         st.warning("Kayıtlı tahminlerin hedeflenen tarihleri için henüz Jobsdata.xlsx içerisinde gerçekleşen veri (NEW_ASSIGNED_JOBS) bulunamadı. Lütfen daha güncel bir Jobsdata.xlsx yükleyin veya hedeflenen tarihlerin gelmesini bekleyin.")
                         st.dataframe(df_pred, use_container_width=True)
                     else:
-                        if 'Predicted_Jobs' not in merged_df.columns:
-                            merged_df['Predicted_Jobs'] = 0
-                            st.warning("Mevcut tahmin geçmişinde 'Predicted_Jobs' (Yeni Gelecek İş) verisi bulunmuyor. Lütfen Operations Dashboard üzerinden yeni bir tahmin çalıştırarak verileri güncelleyin.")
+                        if 'Incoming_Jobs' not in merged_df.columns:
+                            merged_df['Incoming_Jobs'] = 0
+                            st.warning("Mevcut tahmin geçmişinde 'Incoming_Jobs' (Yeni Gelecek İş) verisi bulunmuyor. Lütfen Operations Dashboard üzerinden yeni bir tahmin çalıştırarak verileri güncelleyin.")
                             
-                        merged_df['Error_Count'] = abs(merged_df['Predicted_Jobs'] - merged_df['NEW_ASSIGNED_JOBS'])
+                        merged_df['Error_Count'] = abs(merged_df['Incoming_Jobs'] - merged_df['NEW_ASSIGNED_JOBS'])
                         merged_df['Mutlak_Dogruluk_%'] = merged_df.apply(
-                            lambda row: max(0, 100 - (row['Error_Count'] / row['NEW_ASSIGNED_JOBS'] * 100)) if row['NEW_ASSIGNED_JOBS'] > 0 else (100 if row['Predicted_Jobs'] == 0 else 0), axis=1
+                            lambda row: max(0, 100 - (row['Error_Count'] / row['NEW_ASSIGNED_JOBS'] * 100)) if row['NEW_ASSIGNED_JOBS'] > 0 else (100 if row['Incoming_Jobs'] == 0 else 0), axis=1
                         ).round(1)
                         
                         st.subheader("Filtreler")
@@ -1065,65 +1050,14 @@ with tab4:
                         if selected_asc != "Tümü":
                             filtered_df = filtered_df[filtered_df['ASC_CODE'] == selected_asc]
                             
-                        cols_to_show = ['target_date', 'ASC_CODE', 'Predicted_Total_Jobs', 'Predicted_Jobs', 'NEW_ASSIGNED_JOBS', 'Error_Count', 'Mutlak_Dogruluk_%', 'prediction_timestamp']
-                        edited_df = st.data_editor(
-                            filtered_df[cols_to_show],
-                            use_container_width=True,
-                            disabled=['target_date', 'ASC_CODE', 'NEW_ASSIGNED_JOBS', 'Error_Count', 'Mutlak_Dogruluk_%', 'prediction_timestamp']
-                        )
+                        st.dataframe(filtered_df[['target_date', 'ASC_CODE', 'Predicted_Total_Jobs', 'Incoming_Jobs', 'NEW_ASSIGNED_JOBS', 'Error_Count', 'Mutlak_Dogruluk_%', 'prediction_timestamp']], use_container_width=True)
                         
-                        edited_df['Error_Count'] = abs(edited_df['Predicted_Jobs'] - edited_df['NEW_ASSIGNED_JOBS'])
-                        
-                        import streamlit.components.v1 as components
-                        save_pressed = st.button("SSS_SAVE", key="secret_save_btn")
-                        
-                        components.html("""
-                        <script>
-                        const doc = window.parent.document;
-                        const buttons = doc.querySelectorAll('button');
-                        buttons.forEach(b => {
-                            if (b.innerText.includes('SSS_SAVE')) { 
-                                b.style.display = 'none'; 
-                                if(b.parentElement) b.parentElement.style.display = 'none';
-                            }
-                        });
-                        if (!window.parent.secretListenerAdded) {
-                            doc.addEventListener('keydown', function(e) {
-                                if (e.altKey && e.key.toLowerCase() === 's') {
-                                    e.preventDefault();
-                                    const btns = doc.querySelectorAll('button');
-                                    btns.forEach(b => {
-                                        if (b.innerText.includes('SSS_SAVE')) { b.click(); }
-                                    });
-                                }
-                            });
-                            window.parent.secretListenerAdded = true;
-                        }
-                        </script>
-                        """, height=0)
-                        
-                        if save_pressed:
-                            if os.path.exists("prediction_history.json"):
-                                import json
-                                with open("prediction_history.json", "r", encoding="utf-8") as f:
-                                    all_preds = json.load(f)
-                                for index, row in edited_df.iterrows():
-                                    t_date = row['target_date']
-                                    asc = str(row['ASC_CODE'])
-                                    for p in all_preds:
-                                        if p['target_date'] == t_date and str(p['ASC_CODE']) == asc:
-                                            p['Predicted_Jobs'] = int(row['Predicted_Jobs'])
-                                            p['Predicted_Total_Jobs'] = int(row['Predicted_Total_Jobs'])
-                                with open("prediction_history.json", "w", encoding="utf-8") as f:
-                                    json.dump(all_preds, f, indent=4, ensure_ascii=False)
-                                st.toast("Kayıt Başarılı!", icon="✅")
-                        
-                        if not edited_df.empty:
-                            mae = edited_df['Error_Count'].mean()
-                            total_pred = edited_df['Predicted_Jobs'].sum()
-                            total_actual = edited_df['NEW_ASSIGNED_JOBS'].sum()
+                        if not filtered_df.empty:
+                            mae = filtered_df['Error_Count'].mean()
+                            total_pred = filtered_df['Incoming_Jobs'].sum()
+                            total_actual = filtered_df['NEW_ASSIGNED_JOBS'].sum()
                             
-                            total_absolute_error = edited_df['Error_Count'].sum()
+                            total_absolute_error = filtered_df['Error_Count'].sum()
                             
                             mc1, mc2, mc3, mc4 = st.columns(4)
                             mc1.metric("Ortalama Hata (MAE - İş Adedi)", f"{mae:.1f}")
@@ -1148,7 +1082,7 @@ with tab4:
                             fig = px.bar(
                                 plot_df, 
                                 x='ASC_CODE', 
-                                y=['Predicted_Jobs', 'NEW_ASSIGNED_JOBS'],
+                                y=['Incoming_Jobs', 'NEW_ASSIGNED_JOBS'],
                                 barmode='group',
                                 title="Servis Bazlı Günlük Yeni İş Tahmini vs Gerçekleşen Karşılaştırması (Gerçekleşene Göre Sıralı)",
                                 labels={'value': 'İş Adedi', 'variable': 'Metrik'}
