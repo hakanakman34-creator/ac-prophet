@@ -551,22 +551,37 @@ with tab1:
         forecast_df = fetch_cached_weather(tuple(cities_list))
         
         if not forecast_df.empty:
-            # Dropdown to filter by city
-            st.markdown("### 🔍 İl Bazlı Sıcaklık Detayları")
+            st.markdown("### 🔍 İl ve Tarih Bazlı Sıcaklık Detayları")
             unique_forecast_cities = sorted(forecast_df['City'].unique())
-            selected_city = st.selectbox(
-                "Görüntülenecek İli Seçin:",
-                options=["Tüm İller"] + unique_forecast_cities,
-                index=0,
-                key="weather_city_filter"
-            )
+            unique_forecast_dates = sorted(forecast_df['Tarih'].unique())
             
+            col_filter1, col_filter2 = st.columns(2)
+            with col_filter1:
+                selected_city = st.selectbox(
+                    "Görüntülenecek İli Seçin:",
+                    options=["Tüm İller"] + unique_forecast_cities,
+                    index=0,
+                    key="weather_city_filter"
+                )
+            with col_filter2:
+                selected_dates = st.multiselect(
+                    "Görüntülenecek Tarihleri Seçin:",
+                    options=unique_forecast_dates,
+                    default=[],
+                    key="weather_date_filter",
+                    placeholder="Tüm Tarihler"
+                )
+            
+            # Apply filters
+            filtered_forecast_df = forecast_df.copy()
             if selected_city != "Tüm İller":
-                filtered_forecast_df = forecast_df[forecast_df['City'] == selected_city]
+                filtered_forecast_df = filtered_forecast_df[filtered_forecast_df['City'] == selected_city]
                 chart_title = f"Predicted Average Temperature - {selected_city}"
             else:
-                filtered_forecast_df = forecast_df
                 chart_title = "Predicted Average Temperature by City"
+                
+            if selected_dates:
+                filtered_forecast_df = filtered_forecast_df[filtered_forecast_df['Tarih'].isin(selected_dates)]
                 
             col1, col2 = st.columns([1, 1.5])
             with col1:
