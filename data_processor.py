@@ -132,9 +132,8 @@ def fetch_future_weather(cities: list) -> pd.DataFrame:
 
     try:
         import streamlit as st
-        if st.secrets.get("visual_crossing_api_key"):
+        if st.secrets.get("visual_crossing_api_key") and not vc_api_key:
             vc_api_key = st.secrets.get("visual_crossing_api_key")
-            weather_source = "Visual Crossing"
     except Exception:
         pass
 
