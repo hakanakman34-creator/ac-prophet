@@ -1044,8 +1044,16 @@ with tab4:
                     
                     actual_jobs = df_jobs.groupby([date_col, 'ASC_CODE'])['NEW_ASSIGNED_JOBS'].sum().reset_index()
                     
+                    # Calculate lead time for all predictions
+                    df_pred['prediction_date'] = pd.to_datetime(df_pred['prediction_timestamp']).dt.normalize()
+                    df_pred['target_date_dt'] = pd.to_datetime(df_pred['target_date']).dt.normalize()
+                    df_pred['lead_time_days'] = (df_pred['target_date_dt'] - df_pred['prediction_date']).dt.days
+                    
+                    # For existing tables and charts, only use the LATEST prediction (Backward Compatibility)
+                    df_pred_latest = df_pred.sort_values('prediction_timestamp').groupby(['target_date', 'ASC_CODE']).tail(1).reset_index(drop=True)
+                    
                     merged_df = pd.merge(
-                        df_pred, 
+                        df_pred_latest, 
                         actual_jobs, 
                         left_on=['target_date', 'ASC_CODE'], 
                         right_on=[date_col, 'ASC_CODE'], 
@@ -1173,6 +1181,38 @@ with tab4:
                             )
                             fig.update_xaxes(type='category', tickangle=45)
                             st.plotly_chart(fig, use_container_width=True)
+                            
+                            if selected_date != "Tümü":
+                                st.markdown("---")
+                                st.subheader(f"📉 Kaos Daralma Grafiği (Tahmin Evrimi) - Hedef Tarih: {selected_date}")
+                                st.markdown("Bu grafik, hedef güne yaklaştıkça yapılan tahminlerin nasıl değiştiğini ve gerçekleşen değere (yeşil kesik çizgi) nasıl yaklaştığını gösterir.")
+                                
+                                evo_df = df_pred[df_pred['target_date'] == selected_date].copy()
+                                if selected_asc != "Tümü":
+                                    evo_df = evo_df[evo_df['ASC_CODE'] == selected_asc]
+                                    actual_val = actual_jobs[(actual_jobs[date_col] == selected_date) & (actual_jobs['ASC_CODE'] == selected_asc)]['NEW_ASSIGNED_JOBS'].sum()
+                                else:
+                                    actual_val = actual_jobs[actual_jobs[date_col] == selected_date]['NEW_ASSIGNED_JOBS'].sum()
+                                    
+                                if not evo_df.empty:
+                                    evo_grouped = evo_df.groupby('lead_time_days')['Predicted_Jobs'].sum().reset_index()
+                                    evo_grouped = evo_grouped.sort_values('lead_time_days', ascending=False)
+                                    evo_grouped['Öngörü Ufku'] = evo_grouped['lead_time_days'].astype(str) + " Gün Önce"
+                                    
+                                    fig_evo = px.line(
+                                        evo_grouped, 
+                                        x='Öngörü Ufku', 
+                                        y='Predicted_Jobs', 
+                                        markers=True,
+                                        title="Günden Güne Tahmin Evrimi",
+                                        labels={'Predicted_Jobs': 'Tahmin Edilen İş Adedi'}
+                                    )
+                                    fig_evo.add_hline(y=actual_val, line_dash="dash", line_color="#00FF00", annotation_text=f"Gerçekleşen ({actual_val})", annotation_position="bottom right")
+                                    fig_evo.update_traces(line_color="#3399FF", line_width=3, marker=dict(size=10))
+                                    
+                                    st.plotly_chart(fig_evo, use_container_width=True)
+                                else:
+                                    st.info("Bu tarih için yeterli geçmiş tahmin verisi bulunamadı.")
                             
                             if 'ASC_NAME' in df_jobs.columns:
                                 st.markdown("---")

@@ -387,17 +387,8 @@ def save_prediction_history(seven_day_risk_list: list):
     from datetime import datetime
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    # Use a dictionary to overwrite existing predictions for the same target_date & ASC_CODE
-    # so we keep the most recent prediction if it is run multiple times.
-    # Alternatively, just append. The user probably wants the latest prediction for a day.
-    # Let's just keep the most recent one by using a dict key.
-    
-    history_dict = {}
-    for r in history:
-        # key: target_date + ASC_CODE
-        k = f"{r.get('target_date')}_{r.get('ASC_CODE')}"
-        history_dict[k] = r
-    
+    # Append new predictions to the history instead of overwriting
+    # This allows tracking the evolution of forecasts over time (Lead Time)
     for daily in seven_day_risk_list:
         day_str = str(daily.get('day', '')).strip()
         risk_map = daily.get('risk_map', [])
@@ -413,10 +404,9 @@ def save_prediction_history(seven_day_risk_list: list):
                 "Predicted_Total_Jobs": pred_jobs,
                 "Predicted_Jobs": inc_jobs
             }
-            k = f"{day_str}_{asc_code}"
-            history_dict[k] = record
+            history.append(record)
             
-    new_history = list(history_dict.values())
+    new_history = history
             
     try:
         with open(PREDICTION_HISTORY_FILE, 'w', encoding='utf-8') as f:
