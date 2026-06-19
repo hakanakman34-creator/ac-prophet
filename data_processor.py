@@ -404,14 +404,14 @@ def save_prediction_history(seven_day_risk_list: list):
         for item in risk_map:
             asc_code = str(item.get('ASC_CODE', '')).strip()
             pred_jobs = item.get('Predicted_Total_Jobs', 0)
-            inc_jobs = item.get('Incoming_Jobs', 0)
+            inc_jobs = item.get('Predicted_Jobs', 0)
             
             record = {
                 "prediction_timestamp": now_str,
                 "target_date": day_str,
                 "ASC_CODE": asc_code,
                 "Predicted_Total_Jobs": pred_jobs,
-                "Incoming_Jobs": inc_jobs
+                "Predicted_Jobs": inc_jobs
             }
             k = f"{day_str}_{asc_code}"
             history_dict[k] = record

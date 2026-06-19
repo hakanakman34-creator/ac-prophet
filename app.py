@@ -1159,7 +1159,10 @@ with tab4:
                             
                             mc4.metric("Tahmin Edilen vs Gerçekleşen Toplam", f"{total_pred} / {total_actual}")
                             
-                            plot_df = filtered_df.sort_values('NEW_ASSIGNED_JOBS', ascending=False)
+                            # Group by ASC_CODE to sum the values for 'Tümü' (All) selection before plotting
+                            plot_df = filtered_df.groupby('ASC_CODE')[['Predicted_Jobs', 'NEW_ASSIGNED_JOBS']].sum().reset_index()
+                            plot_df = plot_df.sort_values('NEW_ASSIGNED_JOBS', ascending=False)
+                            
                             fig = px.bar(
                                 plot_df, 
                                 x='ASC_CODE', 
