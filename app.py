@@ -1182,37 +1182,138 @@ with tab4:
                             fig.update_xaxes(type='category', tickangle=45)
                             st.plotly_chart(fig, use_container_width=True)
                             
+                            st.markdown("---")
+                            st.subheader("📉 Kaos Daralma Grafiği (Öngörü Ufku Analizi)")
+                            
+                            kaos_metric_type = st.radio(
+                                "Grafik ve Metrik Tipi Seçin:",
+                                options=["Genel Hacim Doğruluğu (%)", "Mutlak Doğruluk (%)"],
+                                index=0,
+                                horizontal=True
+                            )
+                            
                             if selected_date != "Tümü":
-                                st.markdown("---")
-                                st.subheader(f"📉 Kaos Daralma Grafiği (Tahmin Evrimi) - Hedef Tarih: {selected_date}")
-                                st.markdown("Bu grafik, hedef güne yaklaştıkça yapılan tahminlerin nasıl değiştiğini ve gerçekleşen değere (yeşil kesik çizgi) nasıl yaklaştığını gösterir.")
+                                st.markdown(f"**Hedef Tarih:** {selected_date}. Bu grafik, hedef güne yaklaştıkça yapılan tahminlerin nasıl değiştiğini ve gerçekleşen değere (yeşil kesik çizgi) nasıl yaklaştığını gösterir.")
                                 
                                 evo_df = df_pred[df_pred['target_date'] == selected_date].copy()
                                 if selected_asc != "Tümü":
                                     evo_df = evo_df[evo_df['ASC_CODE'] == selected_asc]
-                                    actual_val = actual_jobs[(actual_jobs[date_col] == selected_date) & (actual_jobs['ASC_CODE'] == selected_asc)]['NEW_ASSIGNED_JOBS'].sum()
-                                else:
-                                    actual_val = actual_jobs[actual_jobs[date_col] == selected_date]['NEW_ASSIGNED_JOBS'].sum()
+                                
+                                actuals_filtered = actual_jobs[actual_jobs[date_col] == selected_date].copy()
+                                if selected_asc != "Tümü":
+                                    actuals_filtered = actuals_filtered[actuals_filtered['ASC_CODE'] == selected_asc]
                                     
-                                if not evo_df.empty:
-                                    evo_grouped = evo_df.groupby('lead_time_days')['Predicted_Jobs'].sum().reset_index()
+                                if not evo_df.empty and not actuals_filtered.empty:
+                                    evo_merged = pd.merge(
+                                        evo_df, 
+                                        actuals_filtered, 
+                                        left_on=['target_date', 'ASC_CODE'], 
+                                        right_on=[date_col, 'ASC_CODE'], 
+                                        how='inner'
+                                    )
+                                    
+                                    if not evo_merged.empty:
+                                        if kaos_metric_type == "Mutlak Doğruluk (%)":
+                                            evo_merged['Row_Error'] = abs(evo_merged['Predicted_Jobs'] - evo_merged['NEW_ASSIGNED_JOBS'])
+                                            evo_grouped = evo_merged.groupby('lead_time_days').agg({
+                                                'Row_Error': 'sum',
+                                                'NEW_ASSIGNED_JOBS': 'sum',
+                                                'Predicted_Jobs': 'sum'
+                                            }).reset_index()
+                                            evo_grouped['Error_For_Metric'] = evo_grouped['Row_Error']
+                                        else:
+                                            evo_grouped = evo_merged.groupby('lead_time_days').agg({
+                                                'Predicted_Jobs': 'sum',
+                                                'NEW_ASSIGNED_JOBS': 'sum'
+                                            }).reset_index()
+                                            evo_grouped['Error_For_Metric'] = abs(evo_grouped['Predicted_Jobs'] - evo_grouped['NEW_ASSIGNED_JOBS'])
+                                            
+                                        evo_grouped = evo_grouped.sort_values('lead_time_days', ascending=False)
+                                        evo_grouped['Öngörü Ufku'] = evo_grouped['lead_time_days'].astype(str) + " Gün Önce"
+                                        
+                                        evo_grouped['Doğruluk (%)'] = evo_grouped.apply(
+                                            lambda row: max(0, 100 - (row['Error_For_Metric'] / row['NEW_ASSIGNED_JOBS'] * 100)) if row['NEW_ASSIGNED_JOBS'] > 0 else (100 if row['Predicted_Jobs'] == 0 else 0), axis=1
+                                        ).round(1)
+                                        
+                                        actual_val_total = actuals_filtered['NEW_ASSIGNED_JOBS'].sum()
+                                        
+                                        fig_evo = px.line(
+                                            evo_grouped, 
+                                            x='Öngörü Ufku', 
+                                            y='Predicted_Jobs', 
+                                            markers=True,
+                                            title=f"Günden Güne Tahmin Evrimi ({selected_date}) - İş Adedi Yakınsaması",
+                                            labels={'Predicted_Jobs': 'Tahmin Edilen Toplam İş'}
+                                        )
+                                        fig_evo.add_hline(y=actual_val_total, line_dash="dash", line_color="#00FF00", annotation_text=f"Gerçekleşen ({actual_val_total})", annotation_position="bottom right")
+                                        fig_evo.update_traces(line_color="#3399FF", line_width=3, marker=dict(size=10))
+                                        st.plotly_chart(fig_evo, use_container_width=True)
+                                        
+                                        st.markdown(f"#### 📊 Öngörü Ufku Doğruluk Metrikleri ({kaos_metric_type})")
+                                        cols = st.columns(len(evo_grouped))
+                                        for i, (_, row) in enumerate(evo_grouped.iterrows()):
+                                            with cols[i]:
+                                                st.metric(label=row['Öngörü Ufku'], value=f"%{row['Doğruluk (%)']}")
+                                    else:
+                                        st.info("Eşleşen veri bulunamadı.")
+                                else:
+                                    st.info("Bu tarih için yeterli geçmiş tahmin verisi bulunamadı.")
+                            else:
+                                st.markdown("**Tüm Tarihler (Tümü) Agregasyonu:** Bu grafik, sisteme kayıtlı tüm verilerde hedef güne kaç gün kala yapılan tahminlerin ortalama % kaç isabet oranına sahip olduğunu gösterir. Zaman ufku daraldıkça doğruluğun artması (kaosun azalması) beklenir.")
+                                
+                                evo_df = df_pred.copy()
+                                if selected_asc != "Tümü":
+                                    evo_df = evo_df[evo_df['ASC_CODE'] == selected_asc]
+                                    
+                                evo_merged = pd.merge(
+                                    evo_df, 
+                                    actual_jobs, 
+                                    left_on=['target_date', 'ASC_CODE'], 
+                                    right_on=[date_col, 'ASC_CODE'], 
+                                    how='inner'
+                                )
+                                
+                                if not evo_merged.empty:
+                                    if kaos_metric_type == "Mutlak Doğruluk (%)":
+                                        evo_merged['Row_Error'] = abs(evo_merged['Predicted_Jobs'] - evo_merged['NEW_ASSIGNED_JOBS'])
+                                        evo_grouped = evo_merged.groupby('lead_time_days').agg({
+                                            'Row_Error': 'sum',
+                                            'NEW_ASSIGNED_JOBS': 'sum'
+                                        }).reset_index()
+                                        evo_grouped['Error_For_Metric'] = evo_grouped['Row_Error']
+                                    else:
+                                        evo_grouped = evo_merged.groupby('lead_time_days').agg({
+                                            'Predicted_Jobs': 'sum',
+                                            'NEW_ASSIGNED_JOBS': 'sum'
+                                        }).reset_index()
+                                        evo_grouped['Error_For_Metric'] = abs(evo_grouped['Predicted_Jobs'] - evo_grouped['NEW_ASSIGNED_JOBS'])
+                                        
                                     evo_grouped = evo_grouped.sort_values('lead_time_days', ascending=False)
                                     evo_grouped['Öngörü Ufku'] = evo_grouped['lead_time_days'].astype(str) + " Gün Önce"
+                                    
+                                    evo_grouped['Doğruluk (%)'] = evo_grouped.apply(
+                                        lambda row: max(0, 100 - (row['Error_For_Metric'] / row['NEW_ASSIGNED_JOBS'] * 100)) if row['NEW_ASSIGNED_JOBS'] > 0 else 0, axis=1
+                                    ).round(1)
                                     
                                     fig_evo = px.line(
                                         evo_grouped, 
                                         x='Öngörü Ufku', 
-                                        y='Predicted_Jobs', 
+                                        y='Doğruluk (%)', 
                                         markers=True,
-                                        title="Günden Güne Tahmin Evrimi",
-                                        labels={'Predicted_Jobs': 'Tahmin Edilen İş Adedi'}
+                                        title=f"Ortalama Tahmin Doğruluğu vs Öngörü Ufku - {kaos_metric_type}",
+                                        labels={'Doğruluk (%)': f'{kaos_metric_type}'}
                                     )
-                                    fig_evo.add_hline(y=actual_val, line_dash="dash", line_color="#00FF00", annotation_text=f"Gerçekleşen ({actual_val})", annotation_position="bottom right")
-                                    fig_evo.update_traces(line_color="#3399FF", line_width=3, marker=dict(size=10))
-                                    
+                                    fig_evo.update_traces(line_color="#2beb6d", line_width=3, marker=dict(size=10))
+                                    fig_evo.update_yaxes(range=[0, 100])
                                     st.plotly_chart(fig_evo, use_container_width=True)
+                                    
+                                    st.markdown(f"#### 📊 Öngörü Ufku Doğruluk Metrikleri ({kaos_metric_type})")
+                                    cols = st.columns(len(evo_grouped))
+                                    for i, (_, row) in enumerate(evo_grouped.iterrows()):
+                                        with cols[i % len(cols)]:
+                                            st.metric(label=row['Öngörü Ufku'], value=f"%{row['Doğruluk (%)']}")
                                 else:
-                                    st.info("Bu tarih için yeterli geçmiş tahmin verisi bulunamadı.")
+                                    st.info("Genel analiz için yeterli eşleşen geçmiş veri bulunamadı.")
                             
                             if 'ASC_NAME' in df_jobs.columns:
                                 st.markdown("---")
