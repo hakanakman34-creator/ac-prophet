@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 # Try to initialize the Gemini client
 try:
-    client = genai.Client(http_options=types.HttpOptions(timeout=120000))
+    client = genai.Client(http_options=types.HttpOptions(timeout=160))
 except Exception as e:
     logger.warning("Could not initialize Gemini Client. Make sure GEMINI_API_KEY is set in .env")
     client = None
