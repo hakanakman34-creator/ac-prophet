@@ -1261,9 +1261,9 @@ with tab4:
                                             diff = total_pred - total_actual
                                             diff_str = f"+{int(diff)}" if diff > 0 else str(int(diff))
                                             
-                                            if abs_acc >= 85:
-                                                status = "🟢 İyi"
-                                            elif abs_acc >= 70:
+                                            if gen_acc >= 82:
+                                                status = "🟢 Yüksek"
+                                            elif gen_acc >= 65:
                                                 status = "🟡 Orta"
                                             else:
                                                 status = "🔴 Düşük"
@@ -1307,13 +1307,25 @@ with tab4:
                                         
                                         fig_karne.add_trace(go.Scatter(
                                             x=karne_df['Hedef Gün'],
-                                            y=karne_df['Mutlak Doğruluk (Servis Bazlı)'],
-                                            name='Mutlak Doğruluk (%)',
+                                            y=karne_df['Genel Hacim Doğruluğu'],
+                                            name='Genel Doğruluk (%)',
                                             mode='lines+markers+text',
                                             line=dict(color='#e74c3c', width=3),
                                             marker=dict(size=10),
+                                            text=karne_df['Genel Hacim Doğruluğu'].round(1).astype(str) + '%',
+                                            textposition='top left',
+                                            yaxis='y2'
+                                        ))
+                                        
+                                        fig_karne.add_trace(go.Scatter(
+                                            x=karne_df['Hedef Gün'],
+                                            y=karne_df['Mutlak Doğruluk (Servis Bazlı)'],
+                                            name='Mutlak Doğruluk (%)',
+                                            mode='lines+markers+text',
+                                            line=dict(color='#f39c12', width=3, dash='dot'),
+                                            marker=dict(size=10),
                                             text=karne_df['Mutlak Doğruluk (Servis Bazlı)'].round(1).astype(str) + '%',
-                                            textposition='top center',
+                                            textposition='top right',
                                             yaxis='y2'
                                         ))
                                         
