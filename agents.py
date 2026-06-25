@@ -104,8 +104,8 @@ You MUST output a JSON object adhering exactly to the following structure:
 }
 Output language: Turkish."""
 
-    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
-    def predict(self, historical_context: str, weather_forecast: str, capacity_data: str, multi_year_patterns: str) -> ForecasterOutput:
+    @retry(stop=stop_after_attempt(2), wait=wait_exponential(multiplier=1, min=2, max=10))
+    def predict(self, historical_context: str, weather_forecast: str, capacity_data: str, multi_year_patterns: str, progress_callback=None) -> ForecasterOutput:
         if not client:
             raise ValueError("Gemini Client not initialized.")
             
@@ -149,22 +149,32 @@ Output language: Turkish."""
                     f"Please generate the forecast for the following cities: {cities_str}."
                 )
                 
-                response = client.models.generate_content(
-                    model=self.model_name,
-                    contents=prompt,
-                    config=types.GenerateContentConfig(
-                        system_instruction=self.system_instruction,
-                        response_mime_type="application/json",
-                        response_schema=ForecasterOutput,
-                        temperature=0.2,
-                    ),
-                )
-                return cities_str, ForecasterOutput.model_validate_json(response.text)
+                try:
+                    response = client.models.generate_content(
+                        model=self.model_name,
+                        contents=prompt,
+                        config=types.GenerateContentConfig(
+                            system_instruction=self.system_instruction,
+                            response_mime_type="application/json",
+                            response_schema=ForecasterOutput,
+                            temperature=0.2,
+                            thinking_config=types.ThinkingConfig(thinking_budget=1024),
+                        ),
+                    )
+                    return cities_str, ForecasterOutput.model_validate_json(response.text)
+                except Exception as e:
+                    import traceback
+                    logger.error(f"Error inside predict_batch: {e}")
+                    logger.error(traceback.format_exc())
+                    raise e
 
             results = {}
             import time
-            for batch in city_batches:
+            total_batches = len(city_batches)
+            for i, batch in enumerate(city_batches):
                 batch_str = ", ".join(batch)
+                if progress_callback:
+                    progress_callback(f"Batch {i+1}/{total_batches} işleniyor ({batch_str})...", (i) / total_batches)
                 try:
                     batch_name, output = predict_batch(batch)
                     results[batch_name] = output
@@ -197,17 +207,24 @@ Output language: Turkish."""
             prompt = f"Historical Context:\n{historical_context}\n\nCapacity Data:\n{capacity_data}\n\n7-Day Weather Forecast:\n{weather_forecast}\n\nMulti-Year Historical Patterns:\n{multi_year_patterns}\n\nPlease generate the forecast."
             
             logger.info("Calling legacy Forecaster Agent...")
-            response = client.models.generate_content(
-                model=self.model_name,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    system_instruction=self.system_instruction,
-                    response_mime_type="application/json",
-                    response_schema=ForecasterOutput,
-                    temperature=0.2,
-                ),
-            )
-            return ForecasterOutput.model_validate_json(response.text)
+            try:
+                response = client.models.generate_content(
+                    model=self.model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        system_instruction=self.system_instruction,
+                        response_mime_type="application/json",
+                        response_schema=ForecasterOutput,
+                        temperature=0.2,
+                        thinking_config=types.ThinkingConfig(thinking_budget=1024),
+                    ),
+                )
+                return ForecasterOutput.model_validate_json(response.text)
+            except Exception as e:
+                import traceback
+                logger.error(f"Error inside legacy predict: {e}")
+                logger.error(traceback.format_exc())
+                raise e
 
 
 class WatchdogAgent:
@@ -363,6 +380,7 @@ Gerekçe: [Yakınlarda yeşil donör bulunamadığını açıklayın]
             config=types.GenerateContentConfig(
                 system_instruction=self.system_instruction,
                 temperature=0.2,
+                thinking_config=types.ThinkingConfig(thinking_budget=1024),
             ),
         )
         return response.text
