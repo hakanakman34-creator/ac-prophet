@@ -39,8 +39,9 @@ class WatchdogASCRisk(BaseModel):
     ASC_CODE: str
     City: str
     Predicted_Total_Jobs: int
-    Predicted_Jobs: int
+    Predicted_Jobs: int = 0
     Durum: str  # Kırmızı / Sarı / Yeşil
+    Kapasite_Asimi: str = "Hayır" # "Evet" / "Hayır"
 
 class WatchdogDailyRisk(BaseModel):
     day: str
@@ -269,9 +270,12 @@ class WatchdogAgent:
                     
                     inc_jobs = int(round(float(item.get('Predicted_Jobs', 0.0))))
                     
-                    if pred_jobs > daily_cap:
+                    wait_days = pred_jobs / daily_cap if daily_cap > 0 else 7.0
+                    kapasite_asimi = 'Evet' if pred_jobs > daily_cap else 'Hayır'
+                    
+                    if wait_days > 6.0:
                         durum = 'Kırmızı'
-                    elif pred_jobs >= 0.75 * daily_cap:
+                    elif wait_days > 3.0:
                         durum = 'Sarı'
                     else:
                         durum = 'Yeşil'
@@ -281,7 +285,8 @@ class WatchdogAgent:
                         City=city,
                         Predicted_Total_Jobs=pred_jobs,
                         Predicted_Jobs=inc_jobs,
-                        Durum=durum
+                        Durum=durum,
+                        Kapasite_Asimi=kapasite_asimi
                     ))
                     
                 # Add any missing service codes (completeness rule)
@@ -296,9 +301,12 @@ class WatchdogAgent:
                         city_inc = [item.Predicted_Jobs for item in risk_map if item.City == info['City']]
                         city_avg_inc = int(round(sum(city_inc) / len(city_inc) if city_inc else 0))
                         
-                        if city_avg > daily_cap:
+                        wait_days = city_avg / daily_cap if daily_cap > 0 else 7.0
+                        kapasite_asimi = 'Evet' if city_avg > daily_cap else 'Hayır'
+                        
+                        if wait_days > 6.0:
                             durum = 'Kırmızı'
-                        elif city_avg >= 0.75 * daily_cap:
+                        elif wait_days > 3.0:
                             durum = 'Sarı'
                         else:
                             durum = 'Yeşil'
@@ -308,7 +316,8 @@ class WatchdogAgent:
                             City=info['City'],
                             Predicted_Total_Jobs=city_avg,
                             Predicted_Jobs=city_avg_inc,
-                            Durum=durum
+                            Durum=durum,
+                            Kapasite_Asimi=kapasite_asimi
                         ))
                         
                 seven_day_risk.append(WatchdogDailyRisk(
@@ -329,24 +338,24 @@ class CommanderAgent:
 
 Inputs provided:
 - Target Day: The day from which the transfer strategy should start.
-- Watchdog Risk Map: Contains for each ASC: ASC_CODE, ASC_NAME, City, Predicted_Total_Jobs, Daily_Capacity (= Team Quantity * Job Completion Capacity), Durum (Kırmızı/Sarı/Yeşil), and Capacity_Surplus (= Daily_Capacity - Predicted_Total_Jobs).
+- Watchdog Risk Map: Contains for each ASC: ASC_CODE, ASC_NAME, City, Predicted_Total_Jobs, Daily_Capacity (= Team Quantity * Job Completion Capacity), Durum (Kırmızı/Sarı/Yeşil - aligned with Map: <=3 Yeşil, <=6 Sarı, >6 Kırmızı), Kapasite_Asimi (Evet/Hayır), and Capacity_Surplus (= Daily_Capacity - Predicted_Total_Jobs).
 
 Donor Identification Rules (CRITICAL):
-- A service center is a DONOR if it has a positive Capacity_Surplus AND its Durum is 'Yeşil'.
+- A service center is a DONOR if it has a positive Capacity_Surplus AND its Durum is 'Yeşil' AND Kapasite_Asimi is 'Hayır'.
 - A service center with 'Sarı' status CANNOT be a donor unless its Capacity_Surplus is large enough that donating 1-2 teams would still keep it in 'Yeşil' or 'Sarı' status.
 - Always prefer geographic proximity: suggest transfers between neighboring cities (e.g., Bursa → Tekirdağ, İstanbul → Kocaeli, Edirne → Tekirdağ).
 
 Your Task & Operational Rules:
-1. Identify all Receiver ASCs: Durum = 'Kırmızı' or 'Sarı'
-2. Identify all Donor ASCs: Yeşil status with meaningful surplus capacity
+1. Identify all Receiver ASCs: Durum = 'Kırmızı' or 'Sarı', OR any ASC with Kapasite_Asimi = 'Evet'.
+2. Identify all Donor ASCs: Yeşil status with meaningful surplus capacity (and Kapasite_Asimi = 'Hayır')
 3. Propose SPECIFIC team transfers: [X] teams from [Donor ASC] to [Receiver ASC]
 4. Block Deployment Rule: Transfers must be MINIMUM 3 consecutive days.
 5. After each proposed transfer, recalculate the receiver's new daily backlog and estimate how many days until the queue returns to normal.
 6. If a city has NO green donors nearby, say so explicitly and suggest hiring temporary contractors.
 
 Output Format (MANDATORY EXACT STRUCTURE IN TURKISH):
-Kritik Durumdaki Servis Merkezleri (Alıcılar):
-- [ŞEHİR] (ASC_CODE: [KOD] / [ASC_NAME]): [Durum] Durum, Tahmini İş Yükü: [X], Günlük Kapasite: [Y], Kapasite Açığı: [Z].
+Kritik Durumdaki veya Kapasite Aşımı Olan Servis Merkezleri (Alıcılar):
+- [ŞEHİR] (ASC_CODE: [KOD] / [ASC_NAME]): [Durum] Durum, Kapasite Aşımı: [Kapasite_Asimi], Tahmini İş Yükü: [X], Günlük Kapasite: [Y], Kapasite Açığı: [Z].
 
 Fazla Kapasiteli Servis Merkezleri (Donörler):
 - [ŞEHİR] (ASC_CODE: [KOD] / [ASC_NAME]): [Durum] Durum, Kapasite Fazlası: [X]. Transfer edilebilir ekip: [Y] adet.

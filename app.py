@@ -784,13 +784,22 @@ with tab1:
                                      or str(row.get('City', '')).upper() in str(item.City).strip().upper()),
                                     daily_cap * 0.5
                                 )
-                                durum = 'Kırmızı' if city_avg > daily_cap else ('Sarı' if city_avg >= 0.75 * daily_cap else 'Yeşil')
+                                wait_days = city_avg / daily_cap if daily_cap > 0 else 7.0
+                                kapasite_asimi = 'Evet' if city_avg > daily_cap else 'Hayır'
+                                if wait_days > 6.0:
+                                    durum = 'Kırmızı'
+                                elif wait_days > 3.0:
+                                    durum = 'Sarı'
+                                else:
+                                    durum = 'Yeşil'
                                 from agents import WatchdogASCRisk
                                 daily_risk.risk_map.append(WatchdogASCRisk(
                                     ASC_CODE=asc_code,
                                     City=str(row.get('City', '')),
                                     Predicted_Total_Jobs=int(round(city_avg)),
-                                    Durum=durum
+                                    Predicted_Jobs=0,
+                                    Durum=durum,
+                                    Kapasite_Asimi=kapasite_asimi
                                 ))
 
                     st.success("🤖 **Watchdog Agent Completed**")
