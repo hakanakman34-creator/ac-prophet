@@ -22,10 +22,10 @@ except Exception as e:
 class ASCForecast(BaseModel):
     ASC_CODE: str
     City: str
-    Carryover_Jobs: int
-    Predicted_Jobs: int
-    Completed_Jobs: int
-    Predicted_Total_Jobs: int
+    Carryover_Jobs: float
+    Predicted_Jobs: float
+    Completed_Jobs: float
+    Predicted_Total_Jobs: float
 
 class DailyForecast(BaseModel):
     day: str
@@ -94,10 +94,10 @@ You MUST output a JSON object adhering exactly to the following structure:
         {
           "ASC_CODE": "string containing service code",
           "City": "city name",
-          "Carryover_Jobs": carryover jobs (float),
-          "Predicted_Jobs": incoming jobs (float),
-          "Completed_Jobs": completed jobs (float),
-          "Predicted_Total_Jobs": predicted total backlog (float)
+          "Carryover_Jobs": integer (whole number, no decimals),
+          "Predicted_Jobs": integer (whole number, no decimals),
+          "Completed_Jobs": integer (whole number, no decimals),
+          "Predicted_Total_Jobs": integer (whole number, no decimals)
         },
         ...
       ]
@@ -167,7 +167,18 @@ Output language: Turkish."""
                     start = text.find('{')
                     end = text.rfind('}')
                     json_str = text[start:end+1] if start != -1 and end != -1 else text
-                    return cities_str, ForecasterOutput.model_validate_json(json_str)
+                    try:
+                        return cities_str, ForecasterOutput.model_validate_json(json_str)
+                    except Exception as parse_err:
+                        # Fallback: parse raw JSON dict and coerce numeric fields to int
+                        logger.warning(f"Direct parse failed ({parse_err}), attempting numeric coercion...")
+                        raw = json.loads(json_str)
+                        for day_obj in raw.get('seven_day_forecast', []):
+                            for fc in day_obj.get('forecasts', []):
+                                for k in ['Carryover_Jobs', 'Predicted_Jobs', 'Completed_Jobs', 'Predicted_Total_Jobs']:
+                                    if k in fc and fc[k] is not None:
+                                        fc[k] = round(float(fc[k]))
+                        return cities_str, ForecasterOutput.model_validate(raw)
                 except Exception as e:
                     import traceback
                     logger.error(f"Error inside predict_batch: {e}")
@@ -228,7 +239,17 @@ Output language: Turkish."""
                 start = text.find('{')
                 end = text.rfind('}')
                 json_str = text[start:end+1] if start != -1 and end != -1 else text
-                return ForecasterOutput.model_validate_json(json_str)
+                try:
+                    return ForecasterOutput.model_validate_json(json_str)
+                except Exception as parse_err:
+                    logger.warning(f"Direct parse failed ({parse_err}), attempting numeric coercion...")
+                    raw = json.loads(json_str)
+                    for day_obj in raw.get('seven_day_forecast', []):
+                        for fc in day_obj.get('forecasts', []):
+                            for k in ['Carryover_Jobs', 'Predicted_Jobs', 'Completed_Jobs', 'Predicted_Total_Jobs']:
+                                if k in fc and fc[k] is not None:
+                                    fc[k] = round(float(fc[k]))
+                    return ForecasterOutput.model_validate(raw)
             except Exception as e:
                 import traceback
                 logger.error(f"Error inside legacy predict: {e}")

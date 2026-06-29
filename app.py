@@ -752,10 +752,10 @@ with tab1:
                         forecast_rows.append({
                             'Tarih': daily.day,
                             'Servis Adı': asc_lookup.get(clean_code(item.ASC_CODE), f"Servis {item.ASC_CODE}"),
-                            'Carryover İş Adedi': item.Carryover_Jobs,
-                            'Gelmesi Beklenen İş Adedi': item.Predicted_Jobs,
-                            'Kapatılması Beklenen İş Adedi': item.Completed_Jobs,
-                            "Backlog'a Düşecek İş Adedi": item.Predicted_Total_Jobs
+                            'Carryover İş Adedi': int(round(item.Carryover_Jobs)),
+                            'Gelmesi Beklenen İş Adedi': int(round(item.Predicted_Jobs)),
+                            'Kapatılması Beklenen İş Adedi': int(round(item.Completed_Jobs)),
+                            "Backlog'a Düşecek İş Adedi": int(round(item.Predicted_Total_Jobs))
                         })
                 
                 st.session_state['pipeline_forecast_df'] = pd.DataFrame(forecast_rows)
