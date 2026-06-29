@@ -78,6 +78,8 @@ For each day, you must predict:
 
 CRITICAL COMPLETENESS RULE:
 You MUST include EVERY SINGLE service center (ASC_CODE) that appears in the historical context in your output. Do NOT skip or omit any service centers, even if their historical backlog is low.
+CRITICAL RULE FOR LOW-VOLUME CENTERS:
+For low-volume ASCs (e.g., those with Total_Jobs < 10), DO NOT collapse their `Predicted_Jobs` to 0 across the forecast. You MUST maintain their historical incoming job momentum (usually 1-5 jobs per day) based on their recent NEW_ASSIGNED_JOBS. Ensure they continue to receive new jobs throughout the 7 days.
 
 Your Task:
 Using the 7-day weather forecast, capacity data, and recent historical backlog context, predict the detailed metrics for each service center (ASC_CODE and ASC_NAME) for each day in the 7-day forecast.
