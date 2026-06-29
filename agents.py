@@ -156,13 +156,16 @@ Output language: Turkish."""
                         contents=prompt,
                         config=types.GenerateContentConfig(
                             system_instruction=self.system_instruction,
-                            response_mime_type="application/json",
-                            response_schema=ForecasterOutput,
                             temperature=0.2,
                             thinking_config=types.ThinkingConfig(thinking_budget=1024),
                         ),
                     )
-                    return cities_str, ForecasterOutput.model_validate_json(response.text)
+                    
+                    text = response.text
+                    start = text.find('{')
+                    end = text.rfind('}')
+                    json_str = text[start:end+1] if start != -1 and end != -1 else text
+                    return cities_str, ForecasterOutput.model_validate_json(json_str)
                 except Exception as e:
                     import traceback
                     logger.error(f"Error inside predict_batch: {e}")
@@ -214,13 +217,16 @@ Output language: Turkish."""
                     contents=prompt,
                     config=types.GenerateContentConfig(
                         system_instruction=self.system_instruction,
-                        response_mime_type="application/json",
-                        response_schema=ForecasterOutput,
                         temperature=0.2,
                         thinking_config=types.ThinkingConfig(thinking_budget=1024),
                     ),
                 )
-                return ForecasterOutput.model_validate_json(response.text)
+                
+                text = response.text
+                start = text.find('{')
+                end = text.rfind('}')
+                json_str = text[start:end+1] if start != -1 and end != -1 else text
+                return ForecasterOutput.model_validate_json(json_str)
             except Exception as e:
                 import traceback
                 logger.error(f"Error inside legacy predict: {e}")
