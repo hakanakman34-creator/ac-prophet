@@ -159,7 +159,6 @@ Output language: Turkish."""
                             response_mime_type="application/json",
                             response_schema=ForecasterOutput,
                             temperature=0.2,
-                            thinking_config=types.ThinkingConfig(thinking_budget=1024),
                         ),
                     )
                     return cities_str, ForecasterOutput.model_validate_json(response.text)
@@ -217,7 +216,6 @@ Output language: Turkish."""
                         response_mime_type="application/json",
                         response_schema=ForecasterOutput,
                         temperature=0.2,
-                        thinking_config=types.ThinkingConfig(thinking_budget=1024),
                     ),
                 )
                 return ForecasterOutput.model_validate_json(response.text)
@@ -389,7 +387,6 @@ Gerekçe: [Yakınlarda yeşil donör bulunamadığını açıklayın]
             config=types.GenerateContentConfig(
                 system_instruction=self.system_instruction,
                 temperature=0.2,
-                thinking_config=types.ThinkingConfig(thinking_budget=1024),
             ),
         )
         return response.text
