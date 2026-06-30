@@ -1029,6 +1029,18 @@ with tab1:
                 filtered_f_df = filtered_f_df[filtered_f_df['Tarih'] == selected_date]
                 
             st.dataframe(filtered_f_df, width='stretch', hide_index=True)
+            
+            import io
+            buffer = io.BytesIO()
+            with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+                filtered_f_df.to_excel(writer, index=False, sheet_name='Tahmin Raporu')
+                
+            st.download_button(
+                label="📥 Tabloyu Excel Olarak İndir",
+                data=buffer.getvalue(),
+                file_name="AC_PROPHET_Tahmin_Raporu.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            )
 
         # Commander Orders
         if 'pipeline_tactical_orders' in st.session_state:
