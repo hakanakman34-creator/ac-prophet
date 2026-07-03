@@ -209,8 +209,11 @@ def fetch_future_weather(cities: list) -> pd.DataFrame:
                 # Open-Meteo logic
                 url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&past_days=14&daily=temperature_2m_max,temperature_2m_min,relative_humidity_2m_max&timezone=auto"
                 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+                logger.info(f"[WEATHER DEBUG] Fetching Open-Meteo for {city} ({lat},{lon})...")
                 res = requests.get(url, headers=headers, timeout=15)
+                logger.info(f"[WEATHER DEBUG] {city} -> Status: {res.status_code}, Size: {len(res.text)} bytes")
                 if res.status_code != 200:
+                    logger.error(f"[WEATHER DEBUG] {city} -> Response body: {res.text[:500]}")
                     raise Exception(f"Open-Meteo returned status code {res.status_code}: {res.text}")
                 data = res.json()
                 daily = data.get('daily', {})
@@ -218,6 +221,7 @@ def fetch_future_weather(cities: list) -> pd.DataFrame:
                 t_max = daily.get('temperature_2m_max', [])
                 t_min = daily.get('temperature_2m_min', [])
                 h_max = daily.get('relative_humidity_2m_max', [])
+                logger.info(f"[WEATHER DEBUG] {city} -> {len(dates)} days returned")
                 
                 for i in range(len(dates)):
                     try:
@@ -252,7 +256,7 @@ def fetch_future_weather(cities: list) -> pd.DataFrame:
                         'Ortalama_Nem': h_m
                     })
         except Exception as e:
-            logger.error(f"Failed to fetch weather for {city} via {weather_source}: {e}")
+            logger.error(f"[WEATHER DEBUG] EXCEPTION for {city}: {type(e).__name__}: {e}")
             
         import time
         time.sleep(0.3)
