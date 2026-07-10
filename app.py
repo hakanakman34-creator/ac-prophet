@@ -187,7 +187,8 @@ with tab2:
     
     # Section 1: Manual Daily Entry
     st.subheader("1. Günlük Manuel Veri Girişi")
-    entry_date = st.date_input("Kayıt Tarihi Seçin")
+    import datetime
+    entry_date = st.date_input("Kayıt Tarihi Seçin", value=datetime.date.today() - datetime.timedelta(days=1))
     
     if 'manual_entry_df' not in st.session_state or st.session_state.get('last_entry_date') != entry_date:
         target_date_str = entry_date.strftime("%Y-%m-%d")
