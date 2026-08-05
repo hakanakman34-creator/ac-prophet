@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 from google import genai
 from google.genai import types
+import streamlit as st
 from dotenv import load_dotenv
 import logging
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -11,11 +12,19 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 load_dotenv()
 logger = logging.getLogger(__name__)
 
+# Check st.secrets if GEMINI_API_KEY is not in environment
+if "GEMINI_API_KEY" not in os.environ:
+    try:
+        if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
+            os.environ["GEMINI_API_KEY"] = st.secrets["GEMINI_API_KEY"]
+    except Exception:
+        pass
+
 # Try to initialize the Gemini client
 try:
     client = genai.Client(http_options=types.HttpOptions(timeout=120000))
 except Exception as e:
-    logger.warning("Could not initialize Gemini Client. Make sure GEMINI_API_KEY is set in .env")
+    logger.warning("Could not initialize Gemini Client. Make sure GEMINI_API_KEY is set in .env or Streamlit Secrets")
     client = None
 
 # Pydantic Schemas for Structured Output
