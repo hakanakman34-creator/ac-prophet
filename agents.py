@@ -61,7 +61,7 @@ class WatchdogOutput(BaseModel):
 
 
 class ForecasterAgent:
-    def __init__(self, model_name="gemini-2.5-flash"):
+    def __init__(self, model_name="gemini-3.6-flash"):
         self.model_name = model_name
         self.system_instruction = """You are an expert Data Scientist forecasting HVAC installation demand for Samsung Turkey, focusing EXCLUSIVELY on the Marmara Region.
 Data Schema Provided:
@@ -370,7 +370,7 @@ class WatchdogAgent:
 
 
 class CommanderAgent:
-    def __init__(self, model_name="gemini-2.5-flash"):
+    def __init__(self, model_name="gemini-3.6-flash"):
         self.model_name = model_name
         self.system_instruction = """You are the Operations Commander for Samsung's Marmara Region. Your objective is to minimize installation waiting times by strategically reallocating service teams across cities.
 
