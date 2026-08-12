@@ -1080,11 +1080,30 @@ with tab4:
                     df_pred['target_date_dt'] = pd.to_datetime(df_pred['target_date']).dt.normalize()
                     df_pred['lead_time_days'] = (df_pred['target_date_dt'] - df_pred['prediction_date']).dt.days
                     
-                    # For existing tables and charts, only use the LATEST prediction (Backward Compatibility)
-                    df_pred_latest = df_pred.sort_values('prediction_timestamp').groupby(['target_date', 'ASC_CODE']).tail(1).reset_index(drop=True)
+                    # Unique timestamps for filtering
+                    all_timestamps = sorted(df_pred['prediction_timestamp'].dropna().unique().tolist(), reverse=True)
                     
+                    st.subheader("Filtreler")
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        target_dates = sorted(df_pred['target_date'].unique().tolist(), reverse=True)
+                        selected_date = st.selectbox("Tarih Seçin", ["Tümü"] + target_dates)
+                    with col2:
+                        asc_codes = sorted(df_pred['ASC_CODE'].unique().tolist())
+                        selected_asc = st.selectbox("Servis Kodu Seçin (ASC_CODE)", ["Tümü"] + asc_codes)
+                    with col3:
+                        ts_options = ["En Son Tahminler (Otomatik)", "Tüm Zamanlar"] + all_timestamps
+                        selected_ts = st.selectbox("Tahmin Zamanı Seçin (Timestamp)", ts_options)
+
+                    if selected_ts == "En Son Tahminler (Otomatik)":
+                        df_pred_selected = df_pred.sort_values('prediction_timestamp').groupby(['target_date', 'ASC_CODE']).tail(1).reset_index(drop=True)
+                    elif selected_ts == "Tüm Zamanlar":
+                        df_pred_selected = df_pred.copy()
+                    else:
+                        df_pred_selected = df_pred[df_pred['prediction_timestamp'] == selected_ts].copy()
+
                     merged_df = pd.merge(
-                        df_pred_latest, 
+                        df_pred_selected, 
                         actual_jobs, 
                         left_on=['target_date', 'ASC_CODE'], 
                         right_on=[date_col, 'ASC_CODE'], 
@@ -1104,15 +1123,6 @@ with tab4:
                             lambda row: max(0, 100 - (row['Error_Count'] / row['NEW_ASSIGNED_JOBS'] * 100)) if row['NEW_ASSIGNED_JOBS'] > 0 else (100 if row['Predicted_Jobs'] == 0 else 0), axis=1
                         ).round(1)
                         
-                        st.subheader("Filtreler")
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            target_dates = sorted(merged_df['target_date'].unique().tolist(), reverse=True)
-                            selected_date = st.selectbox("Tarih Seçin", ["Tümü"] + target_dates)
-                        with col2:
-                            asc_codes = sorted(merged_df['ASC_CODE'].unique().tolist())
-                            selected_asc = st.selectbox("Servis Kodu Seçin (ASC_CODE)", ["Tümü"] + asc_codes)
-                            
                         filtered_df = merged_df.copy()
                         if selected_date != "Tümü":
                             filtered_df = filtered_df[filtered_df['target_date'] == selected_date]
